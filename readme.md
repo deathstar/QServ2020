@@ -1,6 +1,6 @@
-# ![](https://cdn0.iconfinder.com/data/icons/HDRV/32/Grey_Server_B.png) QServ [![Build Status](https://travis-ci.org/deathstar/QServCollect.svg?branch=master)](https://travis-ci.org/deathstar/QServCollect) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/QServCollect/wiki/Contributing) 
+# ![](https://cdn0.iconfinder.com/data/icons/HDRV/32/Grey_Server_B.png) QServ [![Build Status](https://travis-ci.org/deathstar/qserv2020.svg?branch=master)](https://travis-ci.org/deathstar/qserv2020) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qserv2020/wiki/Contributing) 
 
-QServ is a highly configurable, compact, fast, extendable, cross-compatible, standalone server modification with community-requested features for Cube 2: Sauerbraten. It is a rather small (approximately 43mb) and only uses about 1% of the CPU with a normal load. [The mod](https://github.com/deathstar/QServ) was originally ported from Trooper Edition and has been around for 7 years.
+QServ is a Cube 2: Sauerbraten server mod that is written entirely in C and C++. The entire command system is split away from the existing server, allowing for ease of upgradability and to allow anyone to easily create their own server commands. The mod attempts to not be too intrusive into existing server architecture, however it accomodates the ever-growing FPS feature demand. 
 
 FEATURES
 --------
@@ -10,41 +10,37 @@ FEATURES
 DOWNLOAD
 --------
 
-Github offers a zip (link below) or you can git clone the repository from the command line
+Github offers a compressed zip (link below) or you can git clone the repository from the command line
 
-Direct Download link: https://codeload.github.com/deathstar/QServCollect/zip/master
+direct download link: https://codeload.github.com/deathstar/qserv2020/zip/master
 
-Terminal Download Command: git clone https://github.com/deathstar/QServCollect
+command line download: git clone https://github.com/deathstar/qserv2020
 
-(requires git): sudo apt-get install git-all or http://sourceforge.net/projects/git-osx-installer/
 
 QUICK SETUP
 -----------
 
-You can simply use the included precompiled executables in the QServCollect-master/bins folder. please move the qserv osx or qserv linux (according to if you're on mac osx or linux) executable into the root QServCollect-master folder and rename it qserv, then run the server executable by executing ./qserv. If the x64 executables are not compatible with your system (for example, if you have a 32 bit operating system), then please compile QServ yourself and create your own executable by following the steps below:
+You can simply use the included precompiled executables in the qserv2020-main/bins folder. please move the qserv osx or qserv linux (according to if you're on mac osx or linux) executable into the root qserv2020-main folder and rename it qserv, then run the server executable by executing ./qserv. If the x64 executables are not compatible with your system (for example, if you have a 32 bit operating system), then please compile QServ yourself and create your own executable by following the steps below:
 
 REQUIREMENTS FOR COMPILING
 --------------------------
 
 **MAC OSX**
 
-- There is an automatic downloader/installer for QServ, you can use it only if you have the requirements below
-- Simply download and run this installer: http://techmaster.mooo.com/download/QServ-Installer.zip 
 - xCode: Go to the App Store and download "xCode," or visit: https://developer.apple.com/xcode/download/
-- Command Line tools: run: "xcode-select --install" from Terminal after xCode is installed
-- Cmake: Download a Mac OSX binary from https://cmake.org/download/
+- xCode command Line tools: run: "xcode-select --install" from Terminal after xCode is installed
+- CMake: download CMake for command line from https://cmake.org/download/
 
 **LINUX**
 
- - Cmake: Download a Linux binary from https://cmake.org/download/ or run "sudo apt-get install cmake" 
+ - Cmake: download CMake for command line from https://cmake.org/download/ or run "sudo apt-get install cmake" 
  - install Zlib from Terminal: "sudo apt-get install zlib1g-dev"
- - install compiler from Terminal: "sudo apt-get install build-essential"
+ - install a compiler from Terminal: "sudo apt-get install build-essential"
  - update from Terminal: "sudo apt-get update"
  
 **WINDOWS**
 
-- Download this version: https://github.com/deathstar/QServWindows
-- Special thanks to BudSpencer for porting QServ to Windows! 
+- A Windows version of QServ can be constructed upon request
 
 Compiling Instructions
 ----------------------
@@ -53,13 +49,13 @@ Please make sure you have all of the requirements for compiling (listed above) i
 
 [Instructional video on how to download/install (compile) QServ](http://techmaster.mooo.com/download/howto_install_qserv.mp4)
 
-1) Download QServ by [clicking here](https://codeload.github.com/deathstar/QServCollect/zip/master) or run "git clone https://github.com/deathstar/QServCollect.git" from command line (requires git): "sudo apt-get install git-all" or http://sourceforge.net/projects/git-osx-installer/
+1) Download QServ by [clicking here](https://codeload.github.com/deathstar/qserv2020/zip/master) or run "git clone https://github.com/deathstar/qserv2020.git" from command line (requires git): "sudo apt-get install git-all" or http://sourceforge.net/projects/git-osx-installer/
 
-2) place the QServCollect folder on your Desktop and make sure it's named accordingly 
+2) place the qserv2020 folder on your Desktop and make sure it's named accordingly 
 
-3) Open command line and type: "cd Desktop/QServCollect"
+3) Open command line and type: "cd Desktop/qserv2020"
 
-4) Run the cmake command (or select the QServCollect folder from the CMake GUI): "cmake ."
+4) Run the cmake command (or select the qserv2020 folder from the CMake GUI): "cmake ."
 
 5) Run the make command: "make"
 
@@ -82,13 +78,15 @@ TROUBLESHOOTING
 
 "command not found: cmake .": cmake is not installed, see above for download link.
 
-Can't see player city/state/country msg: try using geoIP geolocation instead of Curl. To do this, rename the text file in the QServCollect root directory something other than "usecurl.txt." Make sure the file permissions are set to allow QServ access to the curl folder and its contents, along with the entire config folder and usecurl.txt (if you're using curl). You can just use "chmod -R 777 QServCollect" from the command line. Please note that with curl geolocation, the #whois and #stats commands will not show player locations. 
+library not found -lenet: run these commands: cd enet; rm CMakeCache.txt; rm cmake_install.cmake; rm CMakeFiles; cmake .; make, you should be able to compile enet on your system to create the required libenet.a file. If there is an issue using the provided enet file, please try to compile your own (you may also have to remove the existing 
 
-flagruns not storing: You can just use "chmod -R 777 QServCollect" from the command line to give QServ access to its files.
+Can't see player city/state/country msg: try using geoIP geolocation instead of Curl. To do this, rename the text file in the qserv2020 root directory something other than "usecurl.txt." Make sure the file permissions are set to allow QServ access to the curl folder and its contents, along with the entire config folder and usecurl.txt (if you're using curl). You can just use "chmod -R 777 qserv2020" from the command line. Please note that with curl geolocation, the #whois and #stats commands will not show player locations. 
+
+flagruns not storing: You can just use "chmod -R 777 qserv2020" from the command line to give QServ access to its files.
 
 "make: *** No targets specified and no makefile found.  Stop.": the cmake . command was not issued before make.
 
-"No such file or directory": you are changing directories into an invalid folder, make sure QServCollect is the name
+"No such file or directory": you are changing directories into an invalid folder, make sure qserv2020 is the name
 
 "Segmentation fault: 11" on launch: wait for IRC to start! Retry the launch (it will work the second time). Also, please remember the IRC bot is experimental. I have been working on some fixes for it but the threading conflicts make it difficult.
  
@@ -103,7 +101,7 @@ No such file or directory "GeoIP.h": this means some GeoIP file is missing, most
 MORE HELP RESOURCES 
 -------------------
 
-For info about modding, creating commands & more please view the Wiki: https://github.com/deathstar/QServCollect/wiki 
+For info about modding, creating commands & more please view the Wiki: https://github.com/deathstar/qserv2020/wiki 
 
 If you still need help, you can email the main developer: gscottmalibu@gmail.com
 
