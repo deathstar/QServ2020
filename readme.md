@@ -80,7 +80,7 @@ TROUBLESHOOTING
 
 library not found -lenet: run these commands: cd enet; rm CMakeCache.txt; rm cmake_install.cmake; rm CMakeFiles; cmake .; make, you should be able to compile enet on your system to create the required libenet.a file. If there is an issue using the provided enet file, please try to compile your own (you may also have to remove the existing 
 
-Can't see player city/state/country msg: try using geoIP geolocation instead of Curl. To do this, rename the text file in the qserv2020 root directory something other than "usecurl.txt." Make sure the file permissions are set to allow QServ access to the curl folder and its contents, along with the entire config folder and usecurl.txt (if you're using curl). You can just use "chmod -R 777 qserv2020" from the command line. Please note that with curl geolocation, the #whois and #stats commands will not show player locations. 
+Can't see player city/state/country msg: try using geoIP geolocation instead of HTTP. To do this, rename the text file in the config directory something other than "use_http_geo.cfg" Make sure the file permissions are set to allow QServ access to the config file, along with the entire config folder. You can just use "chmod -R 777 qserv2020" from the command line. 
 
 flagruns not storing: You can just use "chmod -R 777 qserv2020" from the command line to give QServ access to its files.
 
@@ -98,12 +98,39 @@ QServ IRC not launching at all (excess flood): you either restarted the server t
 
 No such file or directory "GeoIP.h": this means some GeoIP file is missing, most likely your download was corrupt.
 
-MORE HELP RESOURCES 
+LICENSE 
+-------------------
+
+MIT License
+
+Copyright (c) 2020 George Scott
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+MORE HELP
 -------------------
 
 For info about modding, creating commands & more please view the Wiki: https://github.com/deathstar/qserv2020/wiki 
 
 If you still need help, you can email the main developer: gscottmalibu@gmail.com
+
+
 
 
 

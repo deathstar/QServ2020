@@ -1,5 +1,25 @@
 #include "QCom.h"
 #include "QServ.h"
+#include "HTTPRequest.hpp"
+
+void ReplaceStringInPlace(std::string& subject, const std::string& search, const std::string& replace) {
+    size_t pos = 0;
+    while ((pos = subject.find(search, pos)) != std::string::npos) {
+        subject.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
+}
+
+char* DeleteLast2Chars(char* name)
+{
+    int i = 0;
+    while(name[i] != '\0')
+    {
+        i++;
+    }
+    name[i-2] = '\0';
+    return name;
+}
 
 namespace server {
     void initCmds() {
@@ -587,12 +607,12 @@ namespace server {
     }
 
      QSERV_CALLBACK whois_cmd(p) {
-         #include <stdio.h>
-         //check to see if we want to use curl
-         FILE* f_mode = fopen("usecurl.txt", "r");
-         bool curlgeolocation;
-         if(f_mode) {curlgeolocation = true;}
-         else {curlgeolocation = false;}
+        #include <stdio.h>
+        //check to see if we want to use http geolocation or geoip
+        FILE* f_mode = fopen("config/use_http_geo.cfg", "r");
+        bool HTTP_geolocation;
+        if(f_mode) { HTTP_geolocation = true; }
+        else { HTTP_geolocation = false; }
          
         bool usage = false;
         int cn = -1;
@@ -620,10 +640,26 @@ namespace server {
                             }
                             if(location) sprintf(lmsg[1], "%s", location);
                             (CMD_SCI.privilege == PRIV_ADMIN) ? sprintf(lmsg[0], "%s (%s)", lmsg[1], ip) : sprintf(lmsg[0], "%s", lmsg[1]);
-                            if(curlgeolocation) {
-                                defformatstring(s)("Name: \f0%s \f7CN: \f1%d", colorname(ci), ci->clientnum);
-                                sendf(CMD_SENDER, 1, "ris", N_SERVMSG, s);
-                                
+                            if(HTTP_geolocation) {
+                                try
+                                {
+                                    //pull info
+                                    defformatstring(r_str)("%s%s%s", "http://ip-api.com/line/", ip, "?fields=city,regionName,country");
+                                    http::Request req(r_str);
+                                    const http::Response res = req.send("GET");
+                                    const char* a = std::string(res.body.begin(), res.body.end()).c_str();
+                    
+                                    //cleanup and output
+                                    std::string s = a;
+                                    ReplaceStringInPlace(s, "\n", " > ");
+                                    DeleteLast2Chars((char *)a);
+                                    defformatstring(msg)("Name: \f0%s \f7CN: \f1%d \f7Location: \f2%s", colorname(ci), ci->clientnum, a);
+                                    sendf(CMD_SENDER, 1, "ris", N_SERVMSG, msg);
+                                }
+                                catch (const std::exception& e)
+                                {
+                                    std::cerr << "[ERROR]: HTTP geolocation failed: " << e.what() << '\n';
+                                }
                             }
                             else {
                                  defformatstring(s)("Name: \f0%s \f7CN: \f1%d \f7Location: \f2%s",colorname(ci), ci->clientnum,lmsg[0]);
@@ -1259,12 +1295,12 @@ namespace server {
     }
 
      QSERV_CALLBACK stats_cmd(p) {
-         #include <stdio.h>
-         //check to see if we want to use curl
-         FILE* f_mode = fopen("usecurl.txt", "r");
-         bool curlgeolocation;
-         if(f_mode) {curlgeolocation = true;}
-         else {curlgeolocation = false;}
+        #include <stdio.h>
+        //check to see if we want to use http geolocation or geoip
+        FILE* f_mode = fopen("config/use_http_geo.cfg", "r");
+        bool HTTP_geolocation;
+        if(f_mode) { HTTP_geolocation = true; }
+        else { HTTP_geolocation = false; }
          
         bool usage = false;
         int cn = -1;
@@ -1310,7 +1346,26 @@ namespace server {
                             (CMD_SCI.privilege == PRIV_ADMIN) ? sprintf(lmsg[0], "%s (%s)", lmsg[1], ip) :
                             sprintf(lmsg[0], "%s", lmsg[1]);
                             
-                            if(curlgeolocation) {
+                            if(HTTP_geolocation) {
+                                try
+                                {
+                                    //pull info
+                                    defformatstring(r_str)("%s%s%s", "http://ip-api.com/line/", ip, "?fields=city,regionName,country");
+                                    http::Request req(r_str);
+                                    const http::Response res = req.send("GET");
+                                    const char* a = std::string(res.body.begin(), res.body.end()).c_str();
+                    
+                                    //cleanup and output
+                                    std::string s = a;
+                                    ReplaceStringInPlace(s, "\n", " > ");
+                                    DeleteLast2Chars((char *)a);
+                                    formatstring(buf)("\n\f7location: \f6%s", a);
+                                    concatstring(msg, buf, MAXTRANS);
+                                }
+                                catch (const std::exception& e)
+                                {
+                                    std::cerr << "[ERROR]: HTTP geolocation failed: " << e.what() << '\n';
+                                }
                             }
                             else {
                                 formatstring(buf)("\n\f7location: \f6%s", lmsg[0]);
