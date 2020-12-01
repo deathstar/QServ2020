@@ -389,7 +389,7 @@ namespace server {
         name[i-2] = '\0';
         return name;
     }
-
+    
     void QServ::getLocation(clientinfo *ci) {
         
         //get our localhost ip for comparison exclusion
@@ -499,19 +499,22 @@ namespace server {
             if(HTTP_geolocation) {
                 try
                 {
-                    //pull info
                     defformatstring(r_str)("%s%s%s", "http://ip-api.com/line/", ip, "?fields=city,regionName,country");
                     http::Request req(r_str);
                     const http::Response res = req.send("GET");
+#ifdef __linux__
+                    std::string s(res.body.begin(), res.body.end());
+                    ReplaceStringInPlace(s, "\n", " > ");
+                    s.erase(s.length()-2, 2);
+#elif __APPLE__
                     const char* a = std::string(res.body.begin(), res.body.end()).c_str();
-                    
-                    //cleanup and output
                     std::string s = a;
                     ReplaceStringInPlace(s, "\n", " > ");
                     DeleteLast2Chars((char *)a);
-                    defformatstring(msg)("\f0%s \f7connected from \f6%s", colorname(ci), a);
+#endif
+                    defformatstring(msg)("\f0%s \f7connected from \f6%s", colorname(ci), s.c_str());
                     out(ECHO_SERV,"%s", msg);
-                    defformatstring(cmsg)("%s connected from %s", colorname(ci), a);
+                    defformatstring(cmsg)("%s connected from %s", colorname(ci), s.c_str());
                     out(ECHO_CONSOLE,"%s", cmsg);
                 }
                 catch (const std::exception& e)

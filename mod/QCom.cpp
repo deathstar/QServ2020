@@ -128,9 +128,9 @@ namespace server {
      QSERV_CALLBACK coopgamelimit_cmd(p) {
         int Limitvariable = -1;
         if(CMD_SA) {
-        	Limitvariable = atoi(args[1]);
-        	if(Limitvariable < 1000 || Limitvariable > 9999999) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Enter a game limit between the range of 1000 to 9999999 milliseconds.");
-        	else if(Limitvariable != NULL && args[1] != NULL) instacoop_gamelimit = Limitvariable;
+            Limitvariable = atoi(args[1]);
+            if(Limitvariable < 1000 || Limitvariable > 9999999) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Enter a game limit between the range of 1000 to 9999999 milliseconds.");
+            else if(Limitvariable != NULL && args[1] != NULL) instacoop_gamelimit = Limitvariable;
         }
         else sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
 
@@ -176,7 +176,7 @@ namespace server {
     
     QSERV_CALLBACK unkickban_cmd(p) {
         if(CMD_SA){
-        	clientinfo *ci = qs.getClient(CMD_SENDER);
+            clientinfo *ci = qs.getClient(CMD_SENDER);
             int banid = atoi(args[1]);
             server::unkickban(banid, ci->clientnum);
         }
@@ -246,15 +246,15 @@ namespace server {
                     clientinfo *ci = qs.getClient(cn);
                     if(ci != NULL) {
                         if(ci->connected) {
-                         	if(cn!=CMD_SENDER && !isalpha(cn) && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL && cn!=CMD_SENDER) {
-            				clientinfo *ci = qs.getClient(cn);
-            				clientinfo *sender = qs.getClient(CMD_SENDER);
-           		 				if(ci->state.state==CS_ALIVE) {
-            						suicide(ci);
-            						out(ECHO_SERV, "\f0%s \f7has been brutally murdered", colorname(ci));
-            						out(ECHO_NOCOLOR, "%s has been brutally murdered by %s", colorname(ci), colorname(sender));
-            					}   
-                        	}
+                             if(cn!=CMD_SENDER && !isalpha(cn) && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL && cn!=CMD_SENDER) {
+                            clientinfo *ci = qs.getClient(cn);
+                            clientinfo *sender = qs.getClient(CMD_SENDER);
+                                    if(ci->state.state==CS_ALIVE) {
+                                    suicide(ci);
+                                    out(ECHO_SERV, "\f0%s \f7has been brutally murdered", colorname(ci));
+                                    out(ECHO_NOCOLOR, "%s has been brutally murdered by %s", colorname(ci), colorname(sender));
+                                }
+                            }
                         }
                     } else {
                         sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
@@ -273,29 +273,29 @@ namespace server {
         if(usage) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
     }
     
-	QSERV_CALLBACK allowmaster_cmd(p) {
-		bool usage = false;
-	    int togglenum = -1;
-	    if(CMD_SA) {
-	        togglenum = atoi(args[1]);
-	        	if(togglenum==1 && mastermask == MM_PUBSERV) {
-	            	switchallowmaster();
-	            	clientinfo *ci = qs.getClient(CMD_SENDER);
-	            	out(ECHO_SERV, "\f7Claiming \f0master \f7with \"/setmaster 1\" is now \f0enabled");
-	        	}
-	        	else if(togglenum==0 && mastermask == MM_PRIVSERV) {
-	            	switchdisallowmaster();
-	            	out(ECHO_SERV, "\f7Claiming \f0master \f7with \"/setmaster 1\" is now \f3disabled");
-	        	}
-	        	else if(togglenum==0 && mastermask == MM_PUBSERV) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Master is already disabled. Use \f2#allowmaster 1 \f3to enable it.");
+    QSERV_CALLBACK allowmaster_cmd(p) {
+        bool usage = false;
+        int togglenum = -1;
+        if(CMD_SA) {
+            togglenum = atoi(args[1]);
+                if(togglenum==1 && mastermask == MM_PUBSERV) {
+                    switchallowmaster();
+                    clientinfo *ci = qs.getClient(CMD_SENDER);
+                    out(ECHO_SERV, "\f7Claiming \f0master \f7with \"/setmaster 1\" is now \f0enabled");
+                }
+                else if(togglenum==0 && mastermask == MM_PRIVSERV) {
+                    switchdisallowmaster();
+                    out(ECHO_SERV, "\f7Claiming \f0master \f7with \"/setmaster 1\" is now \f3disabled");
+                }
+                else if(togglenum==0 && mastermask == MM_PUBSERV) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Master is already disabled. Use \f2#allowmaster 1 \f3to enable it.");
                 else if(togglenum==1 && mastermask == MM_PRIVSERV) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Master is already enabled. Use \f2#allowmaster 0 \f3to disable it.");
                 else if(togglenum==NULL || isalpha(togglenum) || togglenum < 0 || togglenum > 1) usage = true;
-	    } else {
-	        togglenum = -1;
-	        usage = true;
-	    }
-		if(usage) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
-	}
+        } else {
+            togglenum = -1;
+            usage = true;
+        }
+        if(usage) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
+    }
     
     SVAR(invadminpass, "");
     QSERV_CALLBACK invadmin_cmd(p) {
@@ -328,17 +328,17 @@ namespace server {
                 if(ci != NULL) {
                     if(ci->connected) {
                         if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL && cn!=CMD_SENDER) {
-                            if(args[2] != NULL) { 
+                            if(args[2] != NULL) {
                                 uint ip = getclientip(ci->clientnum);
-                                int expiremilliseconds = atoi(args[2])*60000;    
-                                int expireseconds = (expiremilliseconds/1000);   
-                                int expireminutes = (expireseconds/60);          
+                                int expiremilliseconds = atoi(args[2])*60000;
+                                int expireseconds = (expiremilliseconds/1000);
+                                int expireminutes = (expireseconds/60);
                                 if(expireminutes < 60 && expireminutes > 0) {
-                                	addban(ip, expiremilliseconds);
-                                	clientinfo *sender = qs.getClient(CMD_SENDER);
-                                	disconnect_client(cn, DISC_KICK);
-                                	out(ECHO_SERV, "\f0%s \f7has been banned for %d minutes.", colorname(ci), expireminutes);
-                                	out(ECHO_NOCOLOR, "%s has been banned for %d minutes.", colorname(ci), expireminutes);
+                                    addban(ip, expiremilliseconds);
+                                    clientinfo *sender = qs.getClient(CMD_SENDER);
+                                    disconnect_client(cn, DISC_KICK);
+                                    out(ECHO_SERV, "\f0%s \f7has been banned for %d minutes.", colorname(ci), expireminutes);
+                                    out(ECHO_NOCOLOR, "%s has been banned for %d minutes.", colorname(ci), expireminutes);
                                 }
                                 else sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Ban time must be between 1 and 59 minutes.");
                             }
@@ -449,7 +449,7 @@ namespace server {
         if(!valid) {sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Unknown mode");}
         }
         else {
-        	bool valid = false;
+            bool valid = false;
             defformatstring(f)("\f3Error: Invalid mode/mapname provided");
             sendf(CMD_SENDER, 1, "ris", N_SERVMSG, f);
         }
@@ -504,42 +504,42 @@ namespace server {
         copystring(msg,"\f7Server Mod: \f3QServ\f7: \f1https://github.com/deathstar/QServCollect");
         sendf(ci ? ci->clientnum : -1, 1, "ris", N_SERVMSG, msg);
         copystring(msg, "\f7Server Architecture: \f0"
-		/* Firstly determine OS */
-		#if !(defined(_WIN32) || defined(WIN32) || defined(WIN64) || defined(_WIN64))
-		/* unix/posix compilant os */
-		#   if defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
+        /* Firstly determine OS */
+        #if !(defined(_WIN32) || defined(WIN32) || defined(WIN64) || defined(_WIN64))
+        /* unix/posix compilant os */
+        #   if defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
                    "GNU/Linux"
-		#   elif defined(__GNU__) || defined(__gnu_hurd__)
+        #   elif defined(__GNU__) || defined(__gnu_hurd__)
                    "GNU/Hurd"
-		#   elif defined(__FreeBSD_kernel__) && defined(__GLIBC__)
+        #   elif defined(__FreeBSD_kernel__) && defined(__GLIBC__)
                    "GNU/FreeBSD"
-		#   elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+        #   elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
                    "FreeBSD"
-		#   elif defined(__OpenBSD__)
+        #   elif defined(__OpenBSD__)
                    "OpenBSD"
-		#   elif defined(__NetBSD__)
+        #   elif defined(__NetBSD__)
                    "NetBSD"
-		#   elif defined(__sun) || defined(sun)
+        #   elif defined(__sun) || defined(sun)
                    "Solaris"
-		#   elif defined(__DragonFly__)
+        #   elif defined(__DragonFly__)
                    "DragonFlyBSD"
-		#   elif defined(__MACH__)
-		#       if defined(__APPLE__)      
-                   "Apple"     
-		#       else   
-                   "Mach"  
-		#       endif  
-		#   elif defined(__CYGWIN__)  
-                   "Cygwin"  
-		#   elif defined(__unix__) || defined(__unix) || defined(unix) || defined(_POSIX_VERSION)  
-                   "UNIX"  
-		#   else  
-                   "unknown"   
-		#   endif     
-		#else      
+        #   elif defined(__MACH__)
+        #       if defined(__APPLE__)
+                   "Apple"
+        #       else
+                   "Mach"
+        #       endif
+        #   elif defined(__CYGWIN__)
+                   "Cygwin"
+        #   elif defined(__unix__) || defined(__unix) || defined(unix) || defined(_POSIX_VERSION)
+                   "UNIX"
+        #   else
+                   "unknown"
+        #   endif
+        #else
                    /* Windows */
                    "Windows"
-		#endif
+        #endif
                    " "
                    );
         concatstring(msg, (sizeof(void *) == 8) ? "x86 (64 bit)" : "i386");
@@ -568,16 +568,16 @@ namespace server {
         
         seconds = t;
     
-        if(months)    
+        if(months)
         {
             formatstring(buf)(" %u month%s", months, months > 1 ? "s" : "");
             concatstring(msg, buf);
         }
         
         if(weeks)
-        { 
+        {
             formatstring(buf)(" %u week%s", weeks, weeks > 1 ? "s" : "");
-            concatstring(msg, buf);  
+            concatstring(msg, buf);
         }
 
         if(days)
@@ -586,22 +586,22 @@ namespace server {
             concatstring(msg, buf);
         }
         
-        if(hours)  
-        { 
+        if(hours)
+        {
             formatstring(buf)(" %u hour%s", hours, hours > 1 ? "s" : "");
-            concatstring(msg, buf);  
+            concatstring(msg, buf);
         }
           
-        if(minutes)   
+        if(minutes)
         {
             formatstring(buf)(" %u minute%s", minutes, minutes > 1 ? "s" : "");
-            concatstring(msg, buf);  
+            concatstring(msg, buf);
         }
         
         if(seconds)
         {
             formatstring(buf)(" %u second%s", seconds, seconds > 1 ? "s" : "");
-            concatstring(msg, buf);    
+            concatstring(msg, buf);
         }
         sendf(ci ? ci->clientnum : -1, 1, "ris", N_SERVMSG, msg);
     }
@@ -643,18 +643,23 @@ namespace server {
                             if(HTTP_geolocation) {
                                 try
                                 {
-                                    //pull info
                                     defformatstring(r_str)("%s%s%s", "http://ip-api.com/line/", ip, "?fields=city,regionName,country");
                                     http::Request req(r_str);
                                     const http::Response res = req.send("GET");
+#ifdef __linux__
+                                    std::string s(res.body.begin(), res.body.end());
+                                    ReplaceStringInPlace(s, "\n", " > ");
+                                    s.erase(s.length()-2, 2);
+                                    defformatstring(msg)("Name: \f0%s \f7CN: \f1%d \f7Location: \f6%s", colorname(ci), ci->clientnum, s.c_str());
+                                    sendf(CMD_SENDER, 1, "ris", N_SERVMSG, msg);
+#elif __APPLE__
                                     const char* a = std::string(res.body.begin(), res.body.end()).c_str();
-                    
-                                    //cleanup and output
                                     std::string s = a;
                                     ReplaceStringInPlace(s, "\n", " > ");
                                     DeleteLast2Chars((char *)a);
-                                    defformatstring(msg)("Name: \f0%s \f7CN: \f1%d \f7Location: \f2%s", colorname(ci), ci->clientnum, a);
+                                    defformatstring(msg)("Name: \f0%s \f7CN: \f1%d \f7Location: \f6%s", colorname(ci), ci->clientnum, a);
                                     sendf(CMD_SENDER, 1, "ris", N_SERVMSG, msg);
+#endif
                                 }
                                 catch (const std::exception& e)
                                 {
@@ -699,18 +704,18 @@ namespace server {
                     if(ci != NULL) {
                         if(ci->connected) {
                         
-                        	if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
-            					if(!ci->isSpecLocked) {
-                					forcespectator(ci);
-                					ci->isSpecLocked = true;
-                					sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f3You have been locked in spectator mode.");
-            				} else if(ci->isSpecLocked) {
-                					unspectate(ci);
-                					ci->isSpecLocked = false;
-                					sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f3You are no longer locked in spectator mode.");
-            			}
+                            if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
+                                if(!ci->isSpecLocked) {
+                                    forcespectator(ci);
+                                    ci->isSpecLocked = true;
+                                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f3You have been locked in spectator mode.");
+                            } else if(ci->isSpecLocked) {
+                                    unspectate(ci);
+                                    ci->isSpecLocked = false;
+                                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f3You are no longer locked in spectator mode.");
+                        }
             
-        			}
+                    }
                            
                         }
                     } else {
@@ -743,9 +748,9 @@ namespace server {
                     if(ci != NULL) {
                         if(ci->connected) {
                                 if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
-        						clientinfo *ci = qs.getClient(cn);
-        						forcespectator(ci);
-        				}				
+                                clientinfo *ci = qs.getClient(cn);
+                                forcespectator(ci);
+                        }
 
                         }
                     } else {
@@ -777,10 +782,10 @@ namespace server {
 
                     if(ci != NULL) {
                         if(ci->connected) {
-                        	if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
-        						clientinfo *ci = qs.getClient(cn);
-       						    unspectate(ci);
-        				}
+                            if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
+                                clientinfo *ci = qs.getClient(cn);
+                                   unspectate(ci);
+                        }
 
                         }
                     } else {
@@ -812,11 +817,11 @@ namespace server {
 
                     if(ci != NULL) {
                         if(ci->connected) {
-                        	if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
-            					ci->isMuted = true;
-            					defformatstring(mutemsg)("\f0%s \f7has been \f3muted", colorname(ci));
-            					sendf(CMD_SENDER, 1, "ris", N_SERVMSG, mutemsg);
-        					}
+                            if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
+                                ci->isMuted = true;
+                                defformatstring(mutemsg)("\f0%s \f7has been \f3muted", colorname(ci));
+                                sendf(CMD_SENDER, 1, "ris", N_SERVMSG, mutemsg);
+                            }
                         }
                     }
                 /*} else {
@@ -846,12 +851,12 @@ namespace server {
 
                     if(ci != NULL) {
                         if(ci->connected) {
-                        	if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
-            					ci->isMuted = false;
-            					defformatstring(unmutemsg)("\f0%s \f7has been \f0unmuted", colorname(ci));
-           						 sendf(CMD_SENDER, 1, "ris", N_SERVMSG, unmutemsg);
-        					}
-							
+                            if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
+                                ci->isMuted = false;
+                                defformatstring(unmutemsg)("\f0%s \f7has been \f0unmuted", colorname(ci));
+                                    sendf(CMD_SENDER, 1, "ris", N_SERVMSG, unmutemsg);
+                            }
+                            
                        }
                     } else {
                         sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
@@ -870,7 +875,7 @@ namespace server {
         if(usage) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
     }
 
-	QSERV_CALLBACK editmute_cmd(p) {
+    QSERV_CALLBACK editmute_cmd(p) {
         bool usage = false;
         int cn = -1;
 
@@ -883,12 +888,12 @@ namespace server {
 
                     if(ci != NULL) {
                         if(ci->connected) {
-                        	 if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
-            					ci->isEditMuted = true;
-            					sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f7Your edits \f3will not \f7show up to others.");
-           					    defformatstring(mutemsg)("\f0%s\f7's edits have been \f3muted", colorname(ci));
-            					sendf(CMD_SENDER, 1, "ris", N_SERVMSG, mutemsg);
-       						 }
+                             if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
+                                ci->isEditMuted = true;
+                                sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f7Your edits \f3will not \f7show up to others.");
+                                   defformatstring(mutemsg)("\f0%s\f7's edits have been \f3muted", colorname(ci));
+                                sendf(CMD_SENDER, 1, "ris", N_SERVMSG, mutemsg);
+                                }
                                                    
                         }
                     } else {
@@ -922,11 +927,11 @@ namespace server {
                     if(ci != NULL) {
                         if(ci->connected) {
                         
-                        	if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
-            					sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f7Your edits \f0will \f7now show up to others.");
-            					ci->isEditMuted = false;
-            					out(ECHO_SERV,"\f0%s\f7's edits have been \f0unmuted", colorname(ci));
-        					}                         
+                            if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
+                                sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f7Your edits \f0will \f7now show up to others.");
+                                ci->isEditMuted = false;
+                                out(ECHO_SERV,"\f0%s\f7's edits have been \f0unmuted", colorname(ci));
+                            }
                         }
                     } else {
                         sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
@@ -958,16 +963,16 @@ namespace server {
 
                     if(ci != NULL) {
                         if(ci->connected) {
-                        	clientinfo *self = qs.getClient(CMD_SENDER);
-        					if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
+                            clientinfo *self = qs.getClient(CMD_SENDER);
+                            if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL) {
                                 if(ci->state.teamkills >= 1) {
-                                	defformatstring(forgivemsg)("\f0%s \f7has forgiven \f3%s", colorname(self), colorname(ci));
-                                	sendf(-1, 1, "ris", N_SERVMSG, forgivemsg);
+                                    defformatstring(forgivemsg)("\f0%s \f7has forgiven \f3%s", colorname(self), colorname(ci));
+                                    sendf(-1, 1, "ris", N_SERVMSG, forgivemsg);
                                 }
                                 else {
-                                	defformatstring(nk)("\f3Error: %s has not teamkilled anyone yet", colorname(ci));
-                                	sendf(-1, 1, "ris", N_SERVMSG, nk);
-                                }  
+                                    defformatstring(nk)("\f3Error: %s has not teamkilled anyone yet", colorname(ci));
+                                    sendf(-1, 1, "ris", N_SERVMSG, nk);
+                                }
                             }
                             
                        }
@@ -1004,14 +1009,14 @@ namespace server {
                         if(ci->connected) {
                         
                         clientinfo *self = qs.getClient(CMD_SENDER);
-        				if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && cn != NULL && ci != NULL && ci->connected && args[1]!=NULL) {
-        				int accuracy = (ci->state.damage*100)/max(ci->state.shotdamage, 1);
-            			privilegemsg(PRIV_MASTER,"\f7Something's fishy! A cheater has been reported.");
-             			out(ECHO_SERV, "\f0%s \f7accuses \f3%s \f7(CN: \f6%d \f7| Accuracy: \f6%d%\f7) of cheating.", colorname(self), colorname(ci), ci->clientnum, accuracy);
-            			out(ECHO_NOCOLOR, "Attention Operator(s): %s - %s accuses %s (CN: %d | Accuracy: %d%) of cheating.", ircoperators, colorname(self), colorname(ci), ci->clientnum, accuracy);
-            			defformatstring(nocolorcheatermsg)("\f3%s \f7has been reported.", colorname(ci));
-            			sendf(CMD_SENDER, 1, "ris", N_SERVMSG, nocolorcheatermsg);
-        			}		
+                        if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && cn != NULL && ci != NULL && ci->connected && args[1]!=NULL) {
+                        int accuracy = (ci->state.damage*100)/max(ci->state.shotdamage, 1);
+                        privilegemsg(PRIV_MASTER,"\f7Something's fishy! A cheater has been reported.");
+                         out(ECHO_SERV, "\f0%s \f7accuses \f3%s \f7(CN: \f6%d \f7| Accuracy: \f6%d%\f7) of cheating.", colorname(self), colorname(ci), ci->clientnum, accuracy);
+                        out(ECHO_NOCOLOR, "Attention Operator(s): %s - %s accuses %s (CN: %d | Accuracy: %d%) of cheating.", ircoperators, colorname(self), colorname(ci), ci->clientnum, accuracy);
+                        defformatstring(nocolorcheatermsg)("\f3%s \f7has been reported.", colorname(ci));
+                        sendf(CMD_SENDER, 1, "ris", N_SERVMSG, nocolorcheatermsg);
+                    }
                            
                         }
                     } else {
@@ -1030,7 +1035,7 @@ namespace server {
 
         if(usage) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
     }
-	
+    
     QSERV_CALLBACK olangfilter_cmd(p) {
         if(CMD_SA) {
             int state = atoi(args[1]);
@@ -1046,35 +1051,35 @@ namespace server {
         }
     }
         
-	VAR(ircignore, 0, 0, 1);
-	SVAR(contactemail, "");
+    VAR(ircignore, 0, 0, 1);
+    SVAR(contactemail, "");
     QSERV_CALLBACK callops_cmd(p) {
-    	//IRC enabled, notify irc-operators/masters/admins
-    	if(!getvar("ircignore")) {
-    		out(ECHO_IRC, "[Attention operator(s)]: %s: %s is in need of assistance.", ircoperators, CMD_SCI.name); 
-    		defformatstring(toclient)("You alerted IRC operator(s): %s", ircoperators); 
-    		sendf(CMD_SENDER, 1, "ris", N_SERVMSG, toclient);
-    		loopv(clients) {
-        		clientinfo *ci = clients[i];
-        		defformatstring(s)("\f6[Attention]: %s, %s is in need of assistance.", colorname(ci), CMD_SCI.name); 
-        		if((ci->privilege == PRIV_ADMIN || ci->privilege == PRIV_MASTER) && ci->connected && ci->clientnum != CMD_SENDER) sendf(ci->clientnum, 1, "ris", N_SERVMSG, s);
-        	}
+        //IRC enabled, notify irc-operators/masters/admins
+        if(!getvar("ircignore")) {
+            out(ECHO_IRC, "[Attention operator(s)]: %s: %s is in need of assistance.", ircoperators, CMD_SCI.name);
+            defformatstring(toclient)("You alerted IRC operator(s): %s", ircoperators);
+            sendf(CMD_SENDER, 1, "ris", N_SERVMSG, toclient);
+            loopv(clients) {
+                clientinfo *ci = clients[i];
+                defformatstring(s)("\f6[Attention]: %s, %s is in need of assistance.", colorname(ci), CMD_SCI.name);
+                if((ci->privilege == PRIV_ADMIN || ci->privilege == PRIV_MASTER) && ci->connected && ci->clientnum != CMD_SENDER) sendf(ci->clientnum, 1, "ris", N_SERVMSG, s);
+            }
         }
         //IRC disabled, echo to console and notify masters/admins
         else if(getvar("ircignore")) {
-        	defformatstring(toclient)("\f7Admins have been notified. \nEmail: \f1%s \f7for more assistance.",contactemail); 
-        	sendf(CMD_SENDER, 1, "ris", N_SERVMSG, toclient);
-        	out(ECHO_CONSOLE, "[Attention operator(s)]: %s: %s is in need of assistance.", ircoperators, CMD_SCI.name); 
-        	loopv(clients) {
-        		clientinfo *ci = clients[i];
-        		defformatstring(s)("\f6[Attention]: %s, %s is in need of assistance.", colorname(ci), CMD_SCI.name); 
-        		if((ci->privilege == PRIV_ADMIN || ci->privilege == PRIV_MASTER) && ci->connected && ci->clientnum != CMD_SENDER) sendf(ci->clientnum, 1, "ris", N_SERVMSG, s);
-        	}
+            defformatstring(toclient)("\f7Admins have been notified. \nEmail: \f1%s \f7for more assistance.",contactemail);
+            sendf(CMD_SENDER, 1, "ris", N_SERVMSG, toclient);
+            out(ECHO_CONSOLE, "[Attention operator(s)]: %s: %s is in need of assistance.", ircoperators, CMD_SCI.name);
+            loopv(clients) {
+                clientinfo *ci = clients[i];
+                defformatstring(s)("\f6[Attention]: %s, %s is in need of assistance.", colorname(ci), CMD_SCI.name);
+                if((ci->privilege == PRIV_ADMIN || ci->privilege == PRIV_MASTER) && ci->connected && ci->clientnum != CMD_SENDER) sendf(ci->clientnum, 1, "ris", N_SERVMSG, s);
+            }
         }
         //Variable for ircignore function handler, set ircignore to -1 to disable master/admin/irc notifications
         else {
-        	defformatstring(toclient)("\f7Sorry, No operators are available currently. \nEmail: \f1%s \f7for more assistance.",contactemail); 
-        	sendf(CMD_SENDER, 1, "ris", N_SERVMSG, toclient);
+            defformatstring(toclient)("\f7Sorry, No operators are available currently. \nEmail: \f1%s \f7for more assistance.",contactemail);
+            sendf(CMD_SENDER, 1, "ris", N_SERVMSG, toclient);
         }
     }
     
@@ -1149,7 +1154,7 @@ namespace server {
                     }
                 } else {
                     sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
-                } 
+                }
             }
         } else {
             sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
@@ -1241,8 +1246,8 @@ namespace server {
 #include <stdio.h>
 #include <time.h>
     QSERV_CALLBACK localtime_cmd(p) {
-  		time_t rawtime; time (&rawtime);
-  		defformatstring(localtime)("Local server time: %s", ctime (&rawtime));
+          time_t rawtime; time (&rawtime);
+          defformatstring(localtime)("Local server time: %s", ctime (&rawtime));
         sendf(CMD_SENDER, 1, "ris", N_SERVMSG, localtime);
     }
 
@@ -1349,18 +1354,23 @@ namespace server {
                             if(HTTP_geolocation) {
                                 try
                                 {
-                                    //pull info
                                     defformatstring(r_str)("%s%s%s", "http://ip-api.com/line/", ip, "?fields=city,regionName,country");
                                     http::Request req(r_str);
                                     const http::Response res = req.send("GET");
+#ifdef __linux__
+                                    std::string s(res.body.begin(), res.body.end());
+                                    ReplaceStringInPlace(s, "\n", " > ");
+                                    s.erase(s.length()-2, 2);
+                                    formatstring(buf)("\n\f7location: \f6%s", s.c_str());
+                                    concatstring(msg, buf, MAXTRANS);
+#elif __APPLE__
                                     const char* a = std::string(res.body.begin(), res.body.end()).c_str();
-                    
-                                    //cleanup and output
                                     std::string s = a;
                                     ReplaceStringInPlace(s, "\n", " > ");
                                     DeleteLast2Chars((char *)a);
                                     formatstring(buf)("\n\f7location: \f6%s", a);
                                     concatstring(msg, buf, MAXTRANS);
+#endif
                                 }
                                 catch (const std::exception& e)
                                 {
@@ -1374,7 +1384,7 @@ namespace server {
                             
                             sendf(CMD_SENDER, 1, "ris", N_SERVMSG, msg);
                             
-                            send_connected_time(ci, CMD_SENDER); 
+                            send_connected_time(ci, CMD_SENDER);
                         }
                     } else {
                         sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
@@ -1392,29 +1402,29 @@ namespace server {
 
         if(usage) sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
     }
-	
+    
                     
-	QSERV_CALLBACK revokepriv_cmd(p) {
-		int cn = -1;
-	
+    QSERV_CALLBACK revokepriv_cmd(p) {
+        int cn = -1;
+    
         if(CMD_SA) {
-			cn = atoi(args[1]);
+            cn = atoi(args[1]);
             if(cn >= 0 && cn <= 1000) {
-				clientinfo *ci = qs.getClient(cn);
-				clientinfo *cisender = qs.getClient(CMD_SENDER);
-				
+                clientinfo *ci = qs.getClient(cn);
+                clientinfo *cisender = qs.getClient(CMD_SENDER);
+                
                 if(ci != NULL) {
-					if(ci->connected) {
-						server::revokemaster(ci);
-						defformatstring(msg)("Privileges have been revoked from the specified client \f3%s", colorname(ci));
-						sendf(-1, 1, "ris", N_SERVMSG, msg);
-						setmaster(ci, true, "", NULL, NULL, PRIV_NONE, true, false, true);
-					}
-				} else {
-					sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
-                } 
-			}
-		} else {
+                    if(ci->connected) {
+                        server::revokemaster(ci);
+                        defformatstring(msg)("Privileges have been revoked from the specified client \f3%s", colorname(ci));
+                        sendf(-1, 1, "ris", N_SERVMSG, msg);
+                        setmaster(ci, true, "", NULL, NULL, PRIV_NONE, true, false, true);
+                    }
+                } else {
+                    sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
+                }
+            }
+        } else {
             sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
         }
     }
