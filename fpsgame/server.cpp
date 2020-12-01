@@ -106,8 +106,7 @@ namespace server {
     //QServ
     bool firstblood;
     bool enableautosendmap = true;
-    bool q_teammode = false;
-    bool persist = false;
+    bool q_teammode, persist = false;
     bool notgotitems = true; //true when map has changed and waiting for clients to send item
     bool gamepaused = false, shouldstep = true;
     int gamemillis = 0, gamelimit = 0, nextexceeded = 0;
@@ -439,12 +438,12 @@ namespace server {
     VAR(clearbansonempty, 0, 1, 1);                  //enables/disables clearing bans when the server empties of players
     VAR(maxdemos, 0, 5, 25);                         //maximum demos stored on the server
     VAR(maxdemosize, 0, 16, 64);                     //sets the max demo size for packets per demo
-    VAR(restrictdemos, 0, 1, 1);                     //restircts recording demos for masters/admins/nopriv
-    VAR(restrictpausegame, 0, 1, 1);                 //restricts setting pausegame for masters/admin/nopriv
-    VAR(restrictgamespeed, 0, 1, 1);                 //restricts setting gamespeed for masters/admin/nopriv
-    VAR(autodemo, 0, 1, 1);                          //record demos automatically
-    VAR(welcomewithname, 0, 1, 1);                   //welcome a client with name
-    VAR(serverconnectmsg, 0, 1, 1);                  //incoming connection alerts for admins
+    VAR(restrictdemos, 0, 0, 1);                     //restircts recording demos for masters/admins/nopriv
+    VAR(restrictpausegame, 0, 0, 1);                 //restricts setting pausegame for masters/admin/nopriv
+    VAR(restrictgamespeed, 0, 0, 1);                 //restricts setting gamespeed for masters/admin/nopriv
+    VAR(autodemo, 0, 0, 1);                          //record demos automatically
+    VAR(welcomewithname, 0, 0, 1);                   //welcome a client with name
+    VAR(serverconnectmsg, 0, 0, 1);                  //incoming connection alerts for admins
     VAR(nodamage, 0, 0, 1);                          //no damage for anyone
     VAR(notkdamage, 0, 0, 1);                        //no damage for teamkills
     VAR(autosendmap, 0, 1, 1);                       //automatically sends map in edit mode
@@ -453,6 +452,7 @@ namespace server {
     VAR(enable_passflag, 0, 1, 1);                   //enables pass the flag in ctf modes
     VAR(no_single_private, 0, 0, 1);                 //no single user can set mastermode private (requires at least 2 clients/admins are exempt)
     VAR(enablemultiplemasters, 0, 0, 1);             //enables /setmaster 1 for multiple clients (stops need for #sendprivs or givemaster)
+    VAR(persistteams, 0, 0, 1);                      //persistant teams across matches
     
     VARF(publicserver, 0, 0, 2, {
         switch(publicserver)
@@ -917,7 +917,7 @@ namespace server {
             {
                 clientinfo *ci = team[i][j];
                 if(!strcmp(ci->team, teamnames[i])) continue;
-                if(persist && ci->team[0] && (!smode || smode->canchangeteam(ci, teamnames[i], ci->team)))
+                if((persist || persistteams) && ci->team[0] && (!smode || smode->canchangeteam(ci, teamnames[i], ci->team)))
                     {
                         addteaminfo(ci->team);
                         continue;
@@ -1942,7 +1942,7 @@ namespace server {
         packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
         putinitclient(ci, p);
         sendpacket(-1, 1, p.finalize(), ci->clientnum);
-        if(persist && m_teammode) out(ECHO_ALL, "Persistant teams currently enabled");
+        if((persist || persistteams) && m_teammode) out(ECHO_ALL, "Persistant teams currently enabled");
     }
     
     void cutogz(char *s)
@@ -2276,7 +2276,7 @@ namespace server {
         
         sendf(-1, 1, "risii", N_MAPCHANGE, smapname, gamemode, 1);
         
-        if(m_teammode && !persist) autoteam();
+        if(m_teammode && (!persist || persistteams)) autoteam();
         
         if(m_capture) smode = &capturemode;
         else if(m_ctf) smode = &ctfmode;
@@ -3272,7 +3272,7 @@ best.add(clients[i]); \
     
     int clientconnect(int n, uint ip, char *ipstr)
     {
-        if(getvar("serverconnectmsg")) {privilegemsg(PRIV_MASTER, "\f7Client detected...");}
+        if(serverconnectmsg) {privilegemsg(PRIV_MASTER, "\f7Client detected...");}
         clientinfo *ci = getinfo(n);
         ci->ip=ipstr; //QServ ci->ip
         ci->clientnum = ci->ownernum = n;
