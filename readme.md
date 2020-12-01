@@ -1,6 +1,6 @@
-# ![](https://cdn0.iconfinder.com/data/icons/HDRV/32/Grey_Server_B.png) QServ [![Build Status](https://travis-ci.org/deathstar/qserv2020.svg?branch=master)](https://travis-ci.org/deathstar/qserv2020) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qserv2020/wiki/Contributing) 
+# ![](https://cdn0.iconfinder.com/data/icons/HDRV/32/Grey_Server_B.png) QServ [![Build Status](https://travis-ci.org/deathstar/qserv2020.svg?branch=master)](https://travis-ci.org/deathstar/qserv2020) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qservcollect/wiki/Contributing) 
 
-QServ is a Cube 2: Sauerbraten server mod that is written entirely in C and C++. The entire command system is split away from the existing server, allowing for ease of upgradability and to allow anyone to easily create their own server commands. The mod attempts to not be too intrusive into existing server architecture, however it accomodates the ever-growing FPS feature demand. 
+QServ is a Cube 2: Sauerbraten server mod that is written entirely in C and C++. The entire command system is split away from the existing server, allowing for ease of upgradability and to allow anyone to easily create their own server commands. The mod attempts to not be too intrusive into existing server architecture, however it accomodates the ever-growing FPS feature demand and expands on gameplay potential and modification. 
 
 FEATURES
 --------
@@ -98,10 +98,8 @@ QServ IRC not launching at all (excess flood): you either restarted the server t
 
 No such file or directory "GeoIP.h": this means some GeoIP file is missing, most likely your download was corrupt.
 
-LICENSE 
--------------------
-
-MIT License
+MIT LICENSE 
+----------------
 
 Copyright (c) 2020 George Scott
 
@@ -124,9 +122,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 MORE HELP
--------------------
+---------------
 
-For info about modding, creating commands & more please view the Wiki: https://github.com/deathstar/qserv2020/wiki 
+For info about modding, creating commands & more please view the Wiki: https://github.com/deathstar/qservcollect/wiki 
+Please note that the Wiki is part of the old QServCollect repository, but most if not all of the information is still pertinent to the 2020 version of QServ.
 
 If you still need help, you can email the main developer: gscottmalibu@gmail.com
 
