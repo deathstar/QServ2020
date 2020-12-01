@@ -1085,7 +1085,7 @@ namespace server {
     
     SVAR(qserv_version, "");
     QSERV_CALLBACK getversion_cmd(p) {
-    defformatstring(ver)("\f7Running \f3QServ \f7(\f2%s\f7): \f1www.github.com/deathstar/QServCollect", qserv_version);
+    defformatstring(ver)("\f7Running \f3QServ \f7(\f2%s\f7): \f1www.github.com/deathstar/QServ2020", qserv_version);
     sendf(CMD_SENDER, 1, "ris", N_SERVMSG, ver);
     }
     
