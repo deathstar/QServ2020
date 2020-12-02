@@ -1198,14 +1198,17 @@ void initserver(bool listen, bool dedicated)
     
     execfile("./config/server-init.cfg", false);
     
-    //Load/Check GeoIP databases
-    if(qs.initgeoip("./GeoIP/GeoIP.dat")) {printf("[ OK ] GeoIP Initalized succesfully\n");}
-    else if(!qs.initgeoip("./GeoIP/GeoIP.dat")) {
-        logoutf("[FATAL ERROR] Failed to load GeoIP database from GeoIP.dat file");
-    }
-    if(qs.initcitygeoip("./GeoIP/GeoLiteCity.dat")) {printf("[ OK ] GeoLite City Initalized succesfully\n");}
-    else if(!qs.initcitygeoip("./GeoIP/GeoLiteCity.dat")) {
-    logoutf("[FATAL ERROR] Failed to load GeoLite database from GeoLiteCity.dat file");
+    //check to see if we want to use http geolocation or geoip
+    FILE* f_mode = fopen("./config/use_http_geo.cfg", "r");
+    bool HTTP_geolocation;
+    if(f_mode) HTTP_geolocation = true;
+    else HTTP_geolocation = false;
+    
+    if(!HTTP_geolocation) {
+        if(qs.initgeoip("./GeoIP/GeoIP.dat")) printf("[ OK ] GeoIP Initalized succesfully\n");
+        else if(!qs.initgeoip("./GeoIP/GeoIP.dat")) logoutf("[FATAL ERROR] Failed to load GeoIP database from GeoIP.dat file");
+        if(qs.initcitygeoip("./GeoIP/GeoLiteCity.dat")) printf("[ OK ] GeoLite City Initalized succesfully\n");
+        else if(!qs.initcitygeoip("./GeoIP/GeoLiteCity.dat")) logoutf("[FATAL ERROR] Failed to load GeoLite database from GeoLiteCity.dat file");
     }
     
     if(listen) setuplistenserver(dedicated);
@@ -1258,6 +1261,7 @@ int main(int argc, char **argv) {
     //main server init
     initserver(true, true);
     
+    //pthread threading for IRC bot
     pthread_t thread[2];
     int c; long t;
     pthread_attr_t attr;
@@ -1279,9 +1283,5 @@ int main(int argc, char **argv) {
         c = pthread_join(thread[i], &status);
         qsleep(5);
     }
-    
     server::serverclose();
-    //pthread_exit(NULL); //we don't close our thread
-    //return EXIT_SUCCESS; //we don't exit
-    return 0; //instead, we return with no problems
 }
