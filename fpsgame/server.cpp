@@ -1922,8 +1922,8 @@ namespace server {
     void sendresume(clientinfo *ci)
     {
         gamestate &gs = ci->state;
-        sendf(-1, 1, "ri3i4i6vi", N_RESUME, ci->clientnum, gs.state,
-            gs.frags, gs.flags, gs.deaths, gs.quadmillis,
+        sendf(-1, 1, "ri3i9vi", N_RESUME, ci->clientnum,
+            gs.state, gs.frags, gs.flags, gs.quadmillis,
             gs.lifesequence,
             gs.health, gs.maxhealth,
             gs.armour, gs.armourtype,
