@@ -158,7 +158,7 @@ int getuint(ucharbuf &p)
         n += (p.get() << 7) - 0x80;
         if(n & (1<<14)) n += (p.get() << 14) - (1<<14);
         if(n & (1<<21)) n += (p.get() << 21) - (1<<21);
-        if(n & (1<<28)) n |= -1<<28;
+        if(n & (1<<28)) n |= -1u<<28; //if(n & (1<<28)) n |= -1<<28;
     }
     return n;
 }
@@ -561,7 +561,7 @@ void processmasterinput()
         while(args < end && iscubespace(*args)) args++;
 
         if(matchstring(input, cmdlen, "failreg"))
-            conoutf(CON_ERROR, "master server registration failed: %s", args);
+            conoutf(CON_ERROR, "master server registration failed: %s, server will only be accessible from localhost", args);
         else if(matchstring(input, cmdlen, "succreg"))
             conoutf("master server registration succeeded");
         else server::processmasterinput(input, cmdlen, args);
@@ -1146,7 +1146,7 @@ void rundedicatedserver()
 
 #else
 #endif
-    logoutf("[ OK ] QServ Started, waiting for clients...");
+    logoutf("QServ started, waiting for clients...");
 }
 
 bool servererror(bool dedicated, const char *desc)

@@ -35,8 +35,11 @@ static geoipv6_t IPV6_NULL;
 #include <sys/types.h> /* for fstat */
 #include <sys/stat.h>	/* for fstat */
 
-#ifdef HAVE_GETTIMEOFDAY
-#include <sys/time.h> /* for gettimeofday */
+/* for gettimeofday */
+#if defined(__linux__) || defined(__APPLE__)
+  #include <sys/time.h>
+#elif defined(_WIN32)
+  #include <time.h>
 #endif
 
 #ifdef HAVE_STDINT_H

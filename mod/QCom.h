@@ -54,7 +54,7 @@ namespace server {
     extern QSERV_CALLBACK rename_cmd(p);
     extern QSERV_CALLBACK addkey_cmd(p);
     extern QSERV_CALLBACK reloadconfig_cmd(p);
-    extern QSERV_CALLBACK listkickbans_cmd(p);
+    extern QSERV_CALLBACK listbans_cmd(p);
     extern QSERV_CALLBACK unkickban_cmd(p);
     extern QSERV_CALLBACK syncauth_cmd(p);
     extern QSERV_CALLBACK smartbot_cmd(p);

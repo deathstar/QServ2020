@@ -110,8 +110,7 @@ namespace server {
     bool notgotitems = true; //true when map has changed and waiting for clients to send item
     bool gamepaused = false, shouldstep = true;
     int gamemillis = 0, gamelimit = 0, nextexceeded = 0;
-    int gamespeed = 100, interm = 0;
-    extern int gamemode = 0;
+    int gamespeed = 100, interm = 0, gamemode = 0;
     string smapname = "";
     enet_uint32 lastsend = 0;
     int mastermode = MM_OPEN, mastermask = MM_PRIVSERV;
@@ -3392,15 +3391,15 @@ best.add(clients[i]); \
         if(bannedips.inrange(banid) && banid >= 0)
         {
             bannedips.remove(banid);
-            sendf(sender, 1, "ris", N_SERVMSG, "kick/ban removed");
-            banid = banid+banid++; //the kick/ban is now gone so occupy the id by another one
+            sendf(sender, 1, "ris", N_SERVMSG, "Ban removed");
+            //banid = banid+banid++; //I was high?
         }
         else if(banid < 0) {
             bannedips.shrink(0);
-            sendservmsg("cleared all kicks/bans");
+            sendservmsg("cleared all bans");
         }
         else {
-            sendf(sender, 1, "ris", N_SERVMSG, tempformatstring("Invalid kick/ban id: %d", banid));
+            sendf(sender, 1, "ris", N_SERVMSG, tempformatstring("Invalid Ban ID: %d, use #listbans to see ID's", banid));
             return;
         }
     }
@@ -3546,7 +3545,7 @@ best.add(clients[i]); \
     {
         if(m >= 0)
         {
-            logoutf("master server connected");
+            logoutf("connected to master server");
             // clear gbans on connect (not on disconnect) to prevent ms outages from clearing all bans
             clearpbans();
         }
@@ -3554,7 +3553,7 @@ best.add(clients[i]); \
 
     void masterdisconnected(int m)
     {
-        if(m >= 0) logoutf("master server disconnected");
+        if(m >= 0) logoutf("disconnected from master server");
         if(m < 0) clearpbans();
         loopvrev(clients)
         {
@@ -3583,7 +3582,7 @@ best.add(clients[i]); \
     void receivefile(int sender, uchar *data, int len)
     {
         clientinfo *ci = getinfo(sender);
-        if(!m_edit || len <= 0 || len > 4*1024*1024 || instacoop && ci->privilege != PRIV_ADMIN) return; //ignore empty sendmaps/instacoop w/o admin
+        if(!m_edit || len <= 0 || len > 4*1024*1024 || (instacoop && ci->privilege != PRIV_ADMIN)) return; //ignore empty sendmaps/instacoop w/o admin
         if(ci->state.state==CS_SPECTATOR && !ci->privilege && !ci->local) return;
         if(mapdata) DELETEP(mapdata);
         mapdata = opentempfile("mapdata", "w+b");

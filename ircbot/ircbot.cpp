@@ -161,7 +161,7 @@ bool ircBot::checkping(char *buff)
         }
         return 0;
     }
-    char * toSearch = "PING ";
+    char const * toSearch = "PING ";
     
     for (int i = 0; i < strlen(buff);i++)
     {
@@ -219,7 +219,7 @@ bool ircBot::checkping(char *buff)
             }
         }
     }
-
+    return 0;
 }
 
 #include <unistd.h>

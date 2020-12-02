@@ -18,7 +18,7 @@ const int maxolangwarnings = 5;
 const char commandprefix = '#';
 
 // restrict modes certain modes only for a tournament, not coop etc.
-static char *qserv_modenames[] = {
+static char const *qserv_modenames[] = {
 "ffa", "coop", "teamplay", "insta", "instateam", "effic",
     "efficteam", "tac", "tacteam", "capture", "regencapture",
     "ctf", "instactf", "protect", "instaprotect", "hold", "instahold",

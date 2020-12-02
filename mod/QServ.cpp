@@ -343,7 +343,7 @@ namespace server {
         int i=0;
         int j=0;
         
-        for(i;i < strlen(w1); i++)
+        for(int i; i < strlen(w1); i++)
         {
             if(w1[i] == w2[j])
             {

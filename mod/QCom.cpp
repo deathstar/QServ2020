@@ -57,16 +57,16 @@ namespace server {
         ncommand("uneditmute", "\f7Allows a client to edit again. Usage #uneditmute <cn>", PRIV_ADMIN, uneditmute_cmd, 1);
         ncommand("togglelockspec", "\f7Forces a client to be locked in spectator mode. Usage #togglelockspec <cn>", PRIV_ADMIN, togglelockspec_cmd, 1);
         ncommand("ban", "\f7Bans a client. Usage: #ban <cn> <ban time in minutes>", PRIV_ADMIN, ban_cmd, 2);
-        ncommand("pban", "\f7Permanently bans a client. Not listed on #listkickbans, not undoable. Use #clearpbans to clear all. Usage: #pban <cn>", PRIV_ADMIN, pban_cmd, 1);
-        ncommand("clearpbans", "\f7Clears all pbans and ipbans. Usage: #clearpbans", PRIV_ADMIN, clearpbans_cmd, 0);
+        ncommand("pban", "\f7Permanently bans a client. Not listed on #listbans. Use #clearbans to clear all. Usage: #pban <cn>", PRIV_ADMIN, pban_cmd, 1);
+        ncommand("clearbans", "\f7Clears all bans and pbans. Usage: #clearpbans", PRIV_ADMIN, clearpbans_cmd, 0);
         ncommand("teampersist", "\f7Toggle persistant teams on or off. Usage: #teampersist <0/1> (0 for off, 1 for on)", PRIV_MASTER, teampersist_cmd, 1);
         ncommand("allowmaster", "\f7Allows clients to claim master. Usage: #allowmaster <0/1> (0 for off, 1 for on)", PRIV_ADMIN, allowmaster_cmd, 1);
         ncommand("kill", "\f7Brutally murders a player. Usage: #kill <cn>", PRIV_ADMIN, kill_cmd, 1);
         ncommand("rename", "\f7Renames a player. Usage: #rename <cn> <new name>", PRIV_ADMIN, rename_cmd, 2);
         ncommand("addkey", "\f7Adds an authkey to the server. \nUsage: #addkey <name> <domain> <public key> <privilege>", PRIV_ADMIN, addkey_cmd, 4);
-        ncommand("listkickbans", "\f7Lists all kicks/bans. Usage: #listkickbans", PRIV_ADMIN, listkickbans_cmd, 0);
+        ncommand("listbans", "\f7Lists all bans. Usage: #listbans", PRIV_ADMIN, listbans_cmd, 0);
         ncommand("reloadconfig","\f7Reloads server-init.cfg configuration. Usage: #reloadconfig", PRIV_ADMIN, reloadconfig_cmd, 0);
-        ncommand("unkickban", "\f7Unkick/unbans a player. Usage: #unban <ID>. Use #listkickbans for a list with ID's", PRIV_ADMIN, unkickban_cmd, 1);
+        ncommand("unban", "\f7Unbans a player. Usage: #unban <ID>. Use #listbans for a list with ID's", PRIV_ADMIN, unkickban_cmd, 1);
         ncommand("syncauth", "\f7Sync server with new authkeys added to users.cfg. Usage: #syncauth", PRIV_ADMIN, syncauth_cmd, 0);
         ncommand("cw", "\f7Starts a clanwar with a countdown (timer dependent on maxclients). Usage: #cw <mode> <map>", PRIV_MASTER, cw_cmd, 2);
         ncommand("duel", "\f7Starts a duel (timer dependent on maxclients). Usage: #duel <mode> <map>", PRIV_MASTER, duel_cmd, 2);
@@ -169,7 +169,7 @@ namespace server {
         else sendf(CMD_SENDER, 1, "ris", N_SERVMSG, CMD_DESC(cid));
     }
     
-    QSERV_CALLBACK listkickbans_cmd(p) {
+    QSERV_CALLBACK listbans_cmd(p) {
         clientinfo *ci = qs.getClient(CMD_SENDER);
         server::sendkickbanlist(ci->clientnum);
     }
@@ -333,14 +333,14 @@ namespace server {
                                 int expiremilliseconds = atoi(args[2])*60000;
                                 int expireseconds = (expiremilliseconds/1000);
                                 int expireminutes = (expireseconds/60);
-                                if(expireminutes < 60 && expireminutes > 0) {
+                                if(expireminutes > 0) {
                                     addban(ip, expiremilliseconds);
                                     clientinfo *sender = qs.getClient(CMD_SENDER);
                                     disconnect_client(cn, DISC_KICK);
-                                    out(ECHO_SERV, "\f0%s \f7has been banned for %d minutes.", colorname(ci), expireminutes);
-                                    out(ECHO_NOCOLOR, "%s has been banned for %d minutes.", colorname(ci), expireminutes);
+                                    out(ECHO_SERV, "\f0%s \f7has been banned for %d minute(s).", colorname(ci), expireminutes);
+                                    out(ECHO_NOCOLOR, "%s has been banned for %d minute(s).", colorname(ci), expireminutes);
                                 }
-                                else sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Ban time must be between 1 and 59 minutes.");
+                                else sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Ban time must be above 1 minute.");
                             }
                             else if(args[2] == NULL) usage = true;
                         }
@@ -369,7 +369,7 @@ namespace server {
                 if(ci != NULL) {
                     if(ci->connected) {
                         if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && ci != NULL && ci->connected && args[1] != NULL && cn!=CMD_SENDER) {
-                            //ipban doesn't get listed on listkickbans
+                            //ipban doesn't get listed on listbans
                             clientinfo *ci = qs.getClient(cn);
                             out(ECHO_SERV, "\f0%s \f7has been permanently banned.", colorname(ci));
                             out(ECHO_NOCOLOR, "%s has been permanently banned.", colorname(ci));
