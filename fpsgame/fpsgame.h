@@ -205,13 +205,12 @@ namespace server {
             }
     };
     
-    
-    
     extern int gamemillis, nextexceeded;
     
     struct extrainfo
     {
         int lasttakeflag;
+        char *wlauth;
     };
     
     struct clientinfo
@@ -236,7 +235,7 @@ namespace server {
         bool warned, gameclip;
         ENetPacket *getdemo, *getmap, *clipboard;
         int lastclipboard, needclipboard;
-        int connectauth;
+        int connectauth, authmaster;
         uint authreq;
         string authname, authdesc;
         void *authchallenge;
@@ -346,6 +345,7 @@ namespace server {
         void cleanauth(bool full = true)
         {
             authreq = 0;
+            authmaster = -1;
             if(authchallenge) { freechallenge(authchallenge); authchallenge = NULL; }
             if(full) cleanauthkick();
         }

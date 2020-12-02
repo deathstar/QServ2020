@@ -102,7 +102,16 @@ namespace server {
         loopv(bannedips) if(b.expire < bannedips[i].expire) { bannedips.insert(i, b); return; }
         bannedips.add(b);
     }
-    
+
+    //Not tested...
+    static void addmsban(int m, const char *name)
+    {
+        if(m >= 0)
+        {
+            addban(m, -1);
+        }
+    }
+
     //QServ
     bool firstblood;
     bool enableautosendmap = true;
@@ -3426,7 +3435,10 @@ best.add(clients[i]); \
         clientinfo *ci = getinfo(n);
         return ci && ci->connected;
     }
+
     
+    #include "master.h"
+#if Q
     clientinfo *findauth(uint id)
     {
         loopv(clients) if(clients[i]->authreq == id) return clients[i];
@@ -3468,7 +3480,7 @@ best.add(clients[i]); \
     }
     
     uint nextauthreq = 0;
-    
+
     bool tryauth(clientinfo *ci, const char *user, const char *desc)
     {
         ci->cleanauth();
@@ -3489,6 +3501,7 @@ best.add(clients[i]); \
             else ci->cleanauth();
         }
         else if(!requestmasterf("reqauth %u %s\n", ci->authreq, ci->authname))
+        else if(1)
         {
             ci->cleanauth();
             sendf(ci->clientnum, 1, "ris", N_SERVMSG, "not connected to authentication server");
@@ -3529,6 +3542,7 @@ best.add(clients[i]); \
             ci->cleanauth();
         }
         else if(!requestmasterf("confauth %u %s\n", id, val))
+        else if(1)
         {
             ci->cleanauth();
             sendf(ci->clientnum, 1, "ris", N_SERVMSG, "not connected to authentication server");
@@ -3536,16 +3550,28 @@ best.add(clients[i]); \
         if(!ci->authreq && ci->connectauth) disconnect_client(ci->clientnum, ci->connectauth);
     }
 
-    void masterdisconnected()
+    void masterconnected(int m)
     {
+        if(m >= 0)
+        {
+            logoutf("master server connected");
+            // clear gbans on connect (not on disconnect) to prevent ms outages from clearing all bans
+            clearpbans();
+        }
+    }
+
+    void masterdisconnected(int m)
+    {
+        if(m >= 0) logoutf("master server disconnected");
+        if(m < 0) clearpbans();
         loopvrev(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->authreq) authfailed(ci);
+            if(ci->authreq && (m >= 0 ? ci->authmaster == m : ci->authmaster >= 0)) authfailed(ci);
         }
     }
     
-    void processmasterinput(const char *cmd, int cmdlen, const char *args)
+   void processmasterinput(const char *cmd, int cmdlen, const char *args)
     {
         uint id;
         string val;
@@ -3559,8 +3585,8 @@ best.add(clients[i]); \
             gbans.clear();
         else if(sscanf(cmd, "addgban %100s", val) == 1)
             gbans.add(val);
-        
     }
+#endif
     
     void receivefile(int sender, uchar *data, int len)
     {

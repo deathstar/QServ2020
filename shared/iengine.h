@@ -435,7 +435,7 @@ extern void getstring(char *t, ucharbuf &p, int len = MAXTRANS);
 extern void localconnect();
 extern const char *disconnectreason(int reason);
 extern void disconnect_client(int n, int reason);
-/// Custom QServ disconnect /messages
+// Custom QServ disconnect /messages
 void dcres(int cn, const char *reason);
 
 extern void kicknonlocalclients(int reason = DISC_NONE);
@@ -443,7 +443,11 @@ extern bool hasnonlocalclients();
 extern bool haslocalclients();
 extern void sendserverinforeply(ucharbuf &p);
 extern bool requestmaster(const char *req);
-extern bool requestmasterf(const char *fmt, ...);
+extern bool requestmasterf(int m, const char *fmt, ...) PRINTFARGS(2, 3);
+extern int  findauthmaster(const char *desc, int old = -1);
+extern bool allowmasterauth(int m, int priv);
+extern const char *getmasterauth(int m);
+extern int masterauthpriv_get(int m);
 extern bool isdedicatedserver();
 
 // client

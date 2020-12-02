@@ -157,6 +157,14 @@ template<size_t N> inline void sformatstring(char (&d)[N], const char *fmt, ...)
     vformatstring(d, fmt, v, int(N));
     va_end(v);
 }
+inline void nformatstring(char *d, int len, const char *fmt, ...) PRINTFARGS(3, 4);
+inline void nformatstring(char *d, int len, const char *fmt, ...)
+{
+    va_list v;
+    va_start(v, fmt);
+    vformatstring(d, fmt, v, len);
+    va_end(v);
+}
 
 struct stringformatter
 {

@@ -117,10 +117,11 @@ namespace server
     extern int serverport(int infoport = -1);
     extern const char *defaultmaster();
     extern int masterport();
-    extern void processmasterinput(const char *cmd, int cmdlen, const char *args);
+    extern void processmasterinput(int m, const char *cmd, int cmdlen, const char *args);
     extern bool ispaused();
     extern int scaletime(int t);
-    extern void masterdisconnected();
+    extern void masterconnected(int m);
+    extern void masterdisconnected(int m);
     
     //QServ
     extern void serverclose();

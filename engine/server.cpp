@@ -463,9 +463,14 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
     return enet_socket_connect(sock, &remoteaddress);
 }
 
+#include "masterserver.h"
+
+//included twice?
+int lastupdatemaster = 0, lastconnectmaster = 0, masterconnecting = 0, masterconnected = 0;
+
+#if Q
 ENetSocket mastersock = ENET_SOCKET_NULL;
 ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY }, serveraddress = { ENET_HOST_ANY, ENET_PORT_ANY };
-int lastupdatemaster = 0, lastconnectmaster = 0, masterconnecting = 0, masterconnected = 0;
 vector<char> masterout, masterin;
 int masteroutpos = 0, masterinpos = 0;
 VARN(updatemaster, allowupdatemaster, 0, 1, 1);
@@ -498,14 +503,14 @@ ENetSocket connectmaster(bool wait)
     if(!mastername[0]) return ENET_SOCKET_NULL;
     if(masteraddress.host == ENET_HOST_ANY)
     {
-        if(isdedicatedserver()) logoutf("looking up %s...", mastername);
+        logoutf("looking up %s...", mastername);
         masteraddress.port = masterport;
         if(!resolverwait(mastername, &masteraddress)) return ENET_SOCKET_NULL;
     }
     ENetSocket sock = enet_socket_create(ENET_SOCKET_TYPE_STREAM);
     if(sock == ENET_SOCKET_NULL)
     {
-        if(isdedicatedserver()) logoutf("could not open master server socket");
+        logoutf("could not open master server socket");
         return ENET_SOCKET_NULL;
     }
     if(wait || serveraddress.host == ENET_HOST_ANY || !enet_socket_bind(sock, &serveraddress))
@@ -518,7 +523,7 @@ ENetSocket connectmaster(bool wait)
         else if(!enet_socket_connect(sock, &masteraddress)) return sock;
     }
     enet_socket_destroy(sock);
-    if(isdedicatedserver()) logoutf("could not connect to master server");
+    logoutf("could not connect to master server");
     return ENET_SOCKET_NULL;
 }
 
@@ -619,6 +624,7 @@ void flushmasterinput()
     }
     else disconnectmaster();
 }
+#endif
 
 
 static ENetAddress pongaddr;
@@ -640,8 +646,10 @@ void checkserversockets()        // reply all server info requests
     ENET_SOCKETSET_EMPTY(writeset);
     ENetSocket maxsock = pongsock;
     ENET_SOCKETSET_ADD(readset, pongsock);
-    if(mastersock != ENET_SOCKET_NULL)
+    loopv(mss) if(mss[i].mastersock != ENET_SOCKET_NULL)
     {
+        ENetSocket mastersock = mss[i].mastersock;
+        int masterconnected = mss[i].masterconnected;
         maxsock = max(maxsock, mastersock);
         ENET_SOCKETSET_ADD(readset, mastersock);
         if(!masterconnected) ENET_SOCKETSET_ADD(writeset, mastersock);
@@ -651,8 +659,29 @@ void checkserversockets()        // reply all server info requests
         maxsock = max(maxsock, lansock);
         ENET_SOCKETSET_ADD(readset, lansock);
     }
+#ifndef WIN32
+    maxsock = max(maxsock, STDIN_FILENO);
+    ENET_SOCKETSET_ADD(readset, STDIN_FILENO);
+#endif
     if(enet_socketset_select(maxsock, &readset, &writeset, 0) <= 0) return;
 
+#ifndef WIN32
+    if(ENET_SOCKETSET_CHECK(readset, STDIN_FILENO))
+    {
+        char buf[MAXTRANS*2];
+        if(fgets(buf, sizeof(buf), stdin))
+        {
+            size_t len = decodeutf8((uchar *)buf, sizeof(buf)-1, (uchar *)buf, strlen(buf));
+            buf[len] = '\0';
+            const char *ret = executestr(buf);
+            if(ret)
+            {
+                logoutf("result: %s", ret);
+                delete[] ret;
+            }
+        }
+    }
+#endif
     ENetBuffer buf;
     uchar pong[MAXTRANS];
     loopi(2)
@@ -669,8 +698,10 @@ void checkserversockets()        // reply all server info requests
         server::serverinforeply(req, p);
     }
 
-    if(mastersock != ENET_SOCKET_NULL)
+    loopv(mss) if(mss[i].mastersock != ENET_SOCKET_NULL)
     {
+        ENetSocket &mastersock = mss[i].mastersock;
+        int &masterconnected = mss[i].masterconnected, &masterconnecting = mss[i].masterconnecting;
         if(!masterconnected)
         {
             if(ENET_SOCKETSET_CHECK(readset, mastersock) || ENET_SOCKETSET_CHECK(writeset, mastersock))
@@ -678,21 +709,20 @@ void checkserversockets()        // reply all server info requests
                 int error = 0;
                 if(enet_socket_get_option(mastersock, ENET_SOCKOPT_ERROR, &error) < 0 || error)
                 {
-                    logoutf("could not connect to master server");
-                    disconnectmaster();
+                    logoutf("could not connect to master server (%s)", mss[i].mastername);
+                    mss[i].disconnectmaster();
                 }
                 else
                 {
                     masterconnecting = 0;
                     masterconnected = totalmillis ? totalmillis : 1;
-                    //server::masterconnected();
+                    server::masterconnected(i);
                 }
             }
         }
-        if(mastersock != ENET_SOCKET_NULL && ENET_SOCKETSET_CHECK(readset, mastersock)) flushmasterinput();
+        if(mastersock != ENET_SOCKET_NULL && ENET_SOCKETSET_CHECK(readset, mastersock)) mss[i].flushmasterinput();
     }
 }
-
 
 #define DEFAULTCLIENTS 8
 
@@ -703,12 +733,14 @@ VARF(serverport, 0, server::serverport(), 0xFFFF, { if(!serverport) serverport =
 
 int curtime = 0, lastmillis = 0, elapsedtime = 0, totalmillis = 0;
 
+#if Q
 void updatemasterserver()
 {
     if(!masterconnected && lastconnectmaster && totalmillis-lastconnectmaster <= 5*60*1000) return;
     if(mastername[0] && allowupdatemaster) requestmasterf("regserv %d\n", serverport);
     lastupdatemaster = totalmillis ? totalmillis : 1;
 }
+#endif
 
 uint totalsecs = 0;
 
@@ -734,8 +766,7 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
     
     // below is network only
     
-    if(dedicated)
-       {
+
            int millis = (int)enet_time_get();
            elapsedtime = millis - totalmillis;
            static int timeerr = 0;
@@ -746,7 +777,7 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
            lastmillis += curtime;
            totalmillis = millis;
            updatetime();
-       }
+
     server::serverupdate();
     
     flushmasteroutput();
@@ -856,7 +887,7 @@ static bool setupsystemtray(UINT uCallbackMessage)
     return true;
 }
 
-#if 0
+#if Q
 static bool modifysystemtray()
 {
     NOTIFYICONDATA nid;
@@ -1081,11 +1112,6 @@ void logoutfv(const char *fmt, va_list args)
 }
 
 #endif
-
-static bool dedicatedserver = true;
-
-bool isdedicatedserver() { return dedicatedserver; }
-
 
 pthread_t thread2;
 
