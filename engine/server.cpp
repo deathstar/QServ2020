@@ -465,12 +465,10 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
 
 #include "masterserver.h"
 
-//included twice?
-int lastupdatemaster = 0, lastconnectmaster = 0, masterconnecting = 0, masterconnected = 0;
-
 #if Q
 ENetSocket mastersock = ENET_SOCKET_NULL;
 ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY }, serveraddress = { ENET_HOST_ANY, ENET_PORT_ANY };
+int lastupdatemaster = 0, lastconnectmaster = 0, masterconnecting = 0, masterconnected = 0;
 vector<char> masterout, masterin;
 int masteroutpos = 0, masterinpos = 0;
 VARN(updatemaster, allowupdatemaster, 0, 1, 1);
@@ -782,9 +780,9 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
     
     flushmasteroutput();
     checkserversockets();
-
-     if(!lastupdatemaster || totalmillis-lastupdatemaster>60*60*1000)       // send alive signal to masterserver every hour of uptime
-         updatemasterserver();
+    
+    loopv(mss) if(!mss[i].lastupdatemaster || totalmillis-mss[i].lastupdatemaster>60*60*1000)   // send alive signal to masterserver every hour of uptime
+        mss[i].updatemasterserver();
      
      if(totalmillis-laststatus>60*1000)   // display bandwidth stats, useful for server ops
      {
