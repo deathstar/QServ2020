@@ -825,13 +825,14 @@ namespace server {
         }
     }
     
-    bool pickup(int i, int sender) //server-side item pickup, acknowledge first client that gets it
+    bool pickup(int i, int sender)         // server side item pickup, acknowledge first client that gets it
     {
         if((m_timed && gamemillis>=gamelimit) || !sents.inrange(i) || !sents[i].spawned) return false;
         clientinfo *ci = getinfo(sender);
         if(!ci) return false;
         if(!ci->local && !ci->state.canpickup(sents[i].type))
         {
+            sendf(sender, 1, "ri3", N_ITEMACC, i, -1);
             return false;
         }
         sents[i].spawned = false;
@@ -2232,7 +2233,7 @@ namespace server {
     {
         resetitems();
         notgotitems = true;
-        if(m_edit || !loadentities(smapname, ments, &mcrc)) return; //moved from worldio
+        if(m_edit || !loadentities(smapname, ments, &mcrc)) return;
         loopv(ments) if(canspawnitem(ments[i].type))
         {
             server_entity se = { NOTUSED, 0, false };
