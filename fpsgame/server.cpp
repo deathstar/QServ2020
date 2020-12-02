@@ -103,15 +103,6 @@ namespace server {
         bannedips.add(b);
     }
 
-    //Not tested...
-    static void addmsban(int m, const char *name)
-    {
-        if(m >= 0)
-        {
-            addban(m, -1);
-        }
-    }
-
     //QServ
     bool firstblood;
     bool enableautosendmap = true;

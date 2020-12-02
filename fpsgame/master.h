@@ -218,9 +218,9 @@ void processmasterinput(int m, const char *cmd, int cmdlen, const char *args)
     else if(sscanf(cmd, "chalauth %u %255s", &id, val) == 2)
         authchallenged(m, id, val, getmasterauth(m));
     else if(!strncmp(cmd, "cleargbans", cmdlen))
-        clearpbans();
+        gbans.clear();
     else if(sscanf(cmd, "addgban %100s", val) == 1)
-        addmsban(m, val);
+        gbans.add(val);
     else
     {
         logoutf("unknown response from masterserver: %s", cmd);
