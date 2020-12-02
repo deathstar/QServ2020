@@ -1284,4 +1284,5 @@ int main(int argc, char **argv) {
         qsleep(5);
     }
     server::serverclose();
+    return EXIT_SUCCESS;
 }
