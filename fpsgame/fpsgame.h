@@ -142,9 +142,17 @@ namespace server {
             lastdeath = 0;
             respawn();
             
-            _suicides = _stolen = _returned = 0; //Stats for QServ
+            //QServ #stats
+            _suicides = _stolen = _returned = 0;
             lastfragmillis = 0;
             multifrags = spreefrags = 0;
+            
+            //reset damage every match
+            loopi(NUMGUNS)
+            {
+                guninfo[i].damage = 0;
+                guninfo[i].shotdamage = 0;
+            }
         }
         
         void respawn()
