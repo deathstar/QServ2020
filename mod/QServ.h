@@ -106,6 +106,7 @@ namespace server {
             static clientinfo m_lastCI;
 
             bool handleTextCommands(clientinfo*, char*);
+            bool enable_HTTP_geo;
 
             bool isLangWarnOn();
             void setoLang(bool);

@@ -452,7 +452,8 @@ namespace server {
     VAR(no_single_private, 0, 0, 1);                 //no single user can set mastermode private (requires at least 2 clients/admins are exempt)
     VAR(enablemultiplemasters, 0, 0, 1);             //enables /setmaster 1 for multiple clients (stops need for #sendprivs or givemaster)
     VAR(persistteams, 0, 0, 1);                      //persistant teams across matches
-    
+    VAR(httpgeolocation, 0, 1, 1);                   //http geolocation, if 0 then use geoip
+        
     VARF(publicserver, 0, 0, 2, {
         switch(publicserver)
         {
@@ -726,6 +727,8 @@ namespace server {
                 break;
             }
         }
+        if(httpgeolocation) qs.enable_HTTP_geo = true;
+        else if(!httpgeolocation) qs.enable_HTTP_geo = false;
     }
     //Server deinitalizer
     void serverclose()

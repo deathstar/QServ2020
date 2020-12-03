@@ -378,17 +378,6 @@ namespace server {
             pos += replace.length();
         }
     }
-
-    char* DeleteLast2Chars(char* name)
-    {
-        int i = 0;
-        while(name[i] != '\0')
-        {
-            i++;
-        }
-        name[i-2] = '\0';
-        return name;
-    }
     
     void QServ::getLocation(clientinfo *ci) {
         
@@ -480,13 +469,7 @@ namespace server {
                 sprintf(pmsg, "%s%s", typesconsole[typeconsole], location);
             }
             
-            //check to see if we want to use http geolocation or geoip
-            FILE* f_mode = fopen("config/use_http_geo.cfg", "r");
-            bool HTTP_geolocation;
-            if(f_mode) { HTTP_geolocation = true; }
-            else { HTTP_geolocation = false; }
-            
-            if(!HTTP_geolocation) {
+            if(!enable_HTTP_geo) {
                 defformatstring(msg)("\f0%s\f7%s", ci->name, (type < 2) ? types[type] : lmsg);
                 defformatstring(nocolormsg)("%s%s", ci->name, (typeconsole < 2) ? typesconsole[typeconsole] : pmsg);
                 out(ECHO_SERV,"%s",msg);
@@ -495,23 +478,15 @@ namespace server {
                 is_unknown_ip = false; //reset
             }
             
-            //todo: localhost exclusion
-            if(HTTP_geolocation) {
+            if(enable_HTTP_geo) {
                 try
                 {
                     defformatstring(r_str)("%s%s%s", "http://ip-api.com/line/", ip, "?fields=city,regionName,country");
                     http::Request req(r_str);
                     const http::Response res = req.send("GET");
-#ifdef __linux__
                     std::string s(res.body.begin(), res.body.end());
                     ReplaceStringInPlace(s, "\n", " > ");
                     s.erase(s.length()-2, 2);
-#elif __APPLE__
-                    const char* a = std::string(res.body.begin(), res.body.end()).c_str();
-                    std::string s = a;
-                    ReplaceStringInPlace(s, "\n", " > ");
-                    DeleteLast2Chars((char *)a);
-#endif
                     defformatstring(msg)("\f0%s \f7connected from \f6%s", colorname(ci), s.c_str());
                     out(ECHO_SERV,"%s", msg);
                     defformatstring(cmsg)("%s connected from %s", colorname(ci), s.c_str());
@@ -519,7 +494,7 @@ namespace server {
                 }
                 catch (const std::exception& e)
                 {
-                    std::cerr << "[ERROR]: HTTP geolocation failed: " << e.what() << '\n';
+                    std::cerr << "HTTP geolocation localhost connect or failed with: " << e.what() << '\n';
                 }
             }
         }
