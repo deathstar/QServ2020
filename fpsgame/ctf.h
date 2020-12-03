@@ -406,7 +406,7 @@ struct ctfclientmode : clientmode
         if(m_hold) spawnflag(goal);
         sendf(-1, 1, "rii9", N_SCOREFLAG, ci->clientnum, relay, relay >= 0 ? ++flags[relay].version : -1, goal, ++flags[goal].version, flags[goal].spawnindex, team, score, ci->state.flags);
         
-        //qserv flagrun: don't display flagrun time of someone who passed a flag
+        //qserv flagrun: don't display flagrun time of someone who is carrying a flag that was passed to them
         if(!m_hold && !m_protect && !ci->hasPassedFlag)
         {
             int timeused = gamemillis - ci->_xi.lasttakeflag;
