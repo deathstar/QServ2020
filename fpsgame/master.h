@@ -190,7 +190,7 @@ void masterconnected(int m)
 {
     if(m >= 0)
     {
-         logoutf("connected to master server");
+         logoutf("attempting to connect to master server...");
         // clear gbans on connect (not on disconnect) to prevent ms outages from clearing all bans
         clearpbans();
     }
@@ -198,7 +198,7 @@ void masterconnected(int m)
 
 void masterdisconnected(int m)
 {
-    if(m >= 0) logoutf("disconnected from master server");
+    if(m >= 0) logoutf("disconnected from master server: you need to port forward or you are banned from the master server");
     if(m < 0) clearpbans();
     loopvrev(clients)
     {

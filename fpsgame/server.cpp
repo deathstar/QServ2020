@@ -1268,7 +1268,7 @@ namespace server {
     void changegamespeed(int val, clientinfo *ci = NULL)
     {
         val = clamp(val, 10, 1000);
-        if(val!=100 && m_ctf) loopv(clients) clients[i]->_xi.lasttakeflag = 0;
+        if(val!=100 && m_ctf) loopv(clients) clients[i]->_xi.lasttakeflag = 0; //qserv
         if(gamespeed==val) return;
         gamespeed = val;
         sendf(-1, 1, "riii", N_GAMESPEED, gamespeed, ci ? ci->clientnum : -1);

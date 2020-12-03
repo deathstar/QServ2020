@@ -100,6 +100,7 @@ struct ctfclientmode : clientmode
                     takeflag(target, i, f.version);
                     update();
                     out(ECHO_SERV, "%s passed the flag to %s", colorname(actor), colorname(target));
+                    target->hasPassedFlag = true;
                 }
             }
     }
@@ -349,6 +350,8 @@ struct ctfclientmode : clientmode
             {
                 ivec o(vec(ci->state.o).mul(DMF));
                 sendf(-1, 1, "ri7", N_DROPFLAG, ci->clientnum, i, ++f.version, o.x, o.y, o.z);
+                ci->_xi.lasttakeflag = 0; //qserv
+                ci->hasPassedFlag = false; //reset 
                 dropflag(i, o.tovec().div(DMF), lastmillis, dropper ? dropper->clientnum : ci->clientnum);
             }
         }
@@ -402,6 +405,16 @@ struct ctfclientmode : clientmode
         int team = ctfteamflag(ci->team), score = addscore(team, 1);
         if(m_hold) spawnflag(goal);
         sendf(-1, 1, "rii9", N_SCOREFLAG, ci->clientnum, relay, relay >= 0 ? ++flags[relay].version : -1, goal, ++flags[goal].version, flags[goal].spawnindex, team, score, ci->state.flags);
+        
+        //qserv flagrun: don't display flagrun time of someone who passed a flag
+        if(!m_hold && !m_protect && !ci->hasPassedFlag)
+        {
+            int timeused = gamemillis - ci->_xi.lasttakeflag;
+            if(ci->_xi.lasttakeflag && timeused <= 90*1000) _doflagrun(ci, timeused);
+            ci->_xi.lasttakeflag = 0;
+        }
+        ci->hasPassedFlag = false; 
+        //flagrun end
         if(score >= FLAGLIMIT) startintermission();
     }
 
@@ -416,6 +429,18 @@ struct ctfclientmode : clientmode
             loopvj(flags) if(flags[j].owner==ci->clientnum) return;
             ownflag(i, ci->clientnum, lastmillis, m_hold ? team : -1);
             sendf(-1, 1, "ri4", N_TAKEFLAG, ci->clientnum, i, ++f.version);
+            //flag taken first time? and no flagruns and stolen flags in protect
+            if(!f.droptime && !m_protect)
+            {
+                ci->state._stolen++;
+                //no flagruns in hold mode
+                if(!m_hold)
+                {
+                    if(gamespeed == 100) ci->_xi.lasttakeflag = gamemillis ? gamemillis : 1;
+                    else ci->_xi.lasttakeflag = 0;
+                }
+            }
+            //flagrun end
         }
         else if(m_protect)
         {
@@ -423,6 +448,7 @@ struct ctfclientmode : clientmode
         }
         else if(f.droptime)
         {
+            ci->state._returned++; //qserv
             returnflag(i);
             sendf(-1, 1, "ri4", N_RETURNFLAG, ci->clientnum, i, ++f.version);
         }

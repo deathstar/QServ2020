@@ -501,7 +501,7 @@ namespace server {
         clientinfo *ci = qs.getClient(CMD_SENDER);
         string msg, buf;
         uint t, months, weeks, days, hours, minutes, seconds;
-        copystring(msg,"\f7Server Mod: \f3QServ\f7: \f1https://github.com/deathstar/QServCollect");
+        copystring(msg,"\f7Server Mod: \f3QServ\f7: \f1https://github.com/deathstar/QServ2020");
         sendf(ci ? ci->clientnum : -1, 1, "ris", N_SERVMSG, msg);
         copystring(msg, "\f7Server Architecture: \f0"
         /* Firstly determine OS */
