@@ -26,13 +26,13 @@ ICOMMAND(login, "s", (char *s), {
     }if(!strcmp(s, ircloginpass)){
         irc.IRCusers[irc.lastmsg()->host] = 1;
         irc.speak("%s has logged in", irc.lastmsg()->nick);
-		out(ECHO_SERV, "\f0%s \f7has logged in thru IRC (%s \f3%s\f7)", irc.lastmsg()->nick, irchost, ircchan);
+        out(ECHO_SERV, "\f0%s \f7has logged in thru IRC (%s \f3%s\f7)", irc.lastmsg()->nick, irchost, ircchan);
     }
     else irc.notice(irc.lastmsg()->nick, "Error: Invalid Password");
 });
 
 ICOMMAND(clearbans, "", (), {
-	if(isloggedin()) {server::clearbans();}
+    if(isloggedin()) {server::clearbans();}
 });
 
 ICOMMAND(forceintermission, "", (), {
@@ -106,7 +106,7 @@ int ircBot::speak(const char *fmt, ...){
     vsnprintf(k,1000,fmt,list);
     snprintf(Amsg,1000,"PRIVMSG %s :%s\r\n", ircchan, k);
     va_end(list);
-	
+    
     return send(sock,Amsg,strlen(Amsg),0);
 }
 
@@ -138,86 +138,34 @@ void ircBot::ParseMessage(char *buff){
     }
 }
 
-void ircBot::sendpong()
-{
-    char Pingout[60];
-    snprintf(Pingout,60,"PONG :%s\r\n",irchost);
-    send(sock,Pingout,strlen(Pingout),0);
-    printf("SENT: %s\n", Pingout);
-}
-
+bool found;
 bool ircBot::checkping(char *buff)
 {
+    
+    const char * toSearch = "PING ";
+
+    for (int i = 0; i < strlen(buff);i++) {
+    //If the active char is equil to the first search item then search toSearch
+            if (buff[i] == toSearch[0]) {
+                found = true;
+                //search the char array for search field
+                for (int x = 1; x < 4; x++) {
+                    if (buff[i+x]!=toSearch[x]) {
+                    found = false;
+                    }
+                }
+            }
+    }
+
     printf("%s\n", buff);
     char Pingout[60];
     memset(Pingout,'\0',60);
-    if(strlen(buff) < 60) { //check buffer size again to not overload mem: was 100 before seg
-        if(sscanf(buff,"PING :%s",buff)==1)
-        {
-            snprintf(Pingout,60,"PONG :%s\r\n",buff);
-            send(sock,Pingout,strlen(Pingout),0);
-            printf("SENT: %s\n", Pingout);
-            return 1;
-        }
-        return 0;
-    }
-    char const * toSearch = "PING ";
-    
-    for (int i = 0; i < strlen(buff);i++)
+    if(found == true)
     {
-        //If the active char is equil to the first search item then search toSearch
-        if (buff[i] == toSearch[0])
-        {
-            bool found = true;
-            //search the char array for search field
-            for (int x = 1; x < 4; x++)
-            {
-                if (buff[i+x]!=toSearch[x])
-                {
-                    found = false;
-                }
-            }
-            
-            //if found return true;
-            if (found == true)
-            {
-                int count = 0;
-                //Count the chars
-                for (int x = (i+strlen(toSearch)); x < strlen(buff);x++)
-                {
-                    count++;
-                }
-                
-                //Create the new char array
-                char returnHost[count + 5];
-                returnHost[0]='P';
-                returnHost[1]='O';
-                returnHost[2]='N';
-                returnHost[3]='G';
-                returnHost[4]=' ';
-                
-                
-                count = 0;
-                char Pingout[60];
-                //set the hostname data
-                for (int x = (i+strlen(toSearch)); x < strlen(buff);x++)
-                {
-                    returnHost[count+5]=buff[x];
-                    send(sock,Pingout,strlen(Pingout),0);
-                    count++;
-                }
-                
-                //send the pong
-                if (buff)
-                {
-                    snprintf(Pingout,60,"PONG :%s\r\n",buff);
-                    send(sock,Pingout,strlen(Pingout),0);
-                    return 1;
-                }
-            
-                return 0;
-            }
-        }
+        snprintf(Pingout,60,"PONG :%s\r\n",buff);
+        send(sock,Pingout,strlen(Pingout),0);
+        printf("PONG: %s\r\n", irchost);
+        return 1;
     }
     return 0;
 }
@@ -226,21 +174,6 @@ bool ircBot::checkping(char *buff)
 #include <stdio.h>
 
 const int NUM_SECONDS = 10;
-
-void ircBot::periodicpong(char *buff) {
-    int i;
-    int count = 1;
-    char Pingout[60];
-    for(;;)
-    {
-        // delay for 10 seconds
-        for(i = 0 ; i < NUM_SECONDS ; i++) { usleep(60000000); }
-        // print
-        printf("PONG :%s\r\n", buff);
-        snprintf(Pingout,60,"PONG :%s\r\n",buff);
-        send(sock,Pingout,strlen(Pingout),0);
-    }
-}
 
 int ircstring = 0;
 void ircBot::init()
@@ -297,10 +230,10 @@ void ircBot::init()
             memset(mybuffer,'\0',1000);
         }
         connected = false;
-        if(!connected) goto init; //re-initalize after excess flood 
+        if(!connected) goto init; //re-initalize after excess flood
     }
 }
 
 bool ircBot::isConnected() {
-	return connected;
+    return connected;
 }

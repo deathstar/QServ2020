@@ -27,16 +27,14 @@ class ircBot
         int getSock();
         int speak(const char *fmt, ...);
         bool checkping(char *buff);
-        void sendpong();
-        void periodicpong(char *buff);
         bool IsCommand(char *buff);
         void join(char *channel);
         void part(char *channel);
         void notice(char *user, const char *message);
         IrcMsg *lastmsg();
         hashtable<char *, int> IRCusers;
-		
-		bool isConnected();
+        
+        bool isConnected();
     private:
         void ParseMessage(char *buff);
         int sock;
