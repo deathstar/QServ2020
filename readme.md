@@ -11,7 +11,9 @@ DOWNLOAD
 ---------------
 
 Github offers a compressed zip (link below) or you can git clone the repository from the command line
+
 direct download link: https://codeload.github.com/deathstar/qserv2020/zip/master
+
 command line download: git clone https://github.com/deathstar/qserv2020
 
 
