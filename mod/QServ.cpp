@@ -371,12 +371,32 @@ namespace server {
         return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c == ' ');
      }
 
-    void ReplaceStringInPlace(std::string& subject, const std::string& search, const std::string& replace) {
+    //replace string
+    void RString(std::string& subject, const std::string& search, const std::string& replace) {
         size_t pos = 0;
         while ((pos = subject.find(search, pos)) != std::string::npos) {
             subject.replace(pos, search.length(), replace);
             pos += replace.length();
         }
+    }
+
+    void UTFEncode(std::string& s) {
+        RString(s, "À", "A"); RString(s, "È", "E"); RString(s, "Ì", "I");
+        RString(s, "Ò", "O"); RString(s, "Ù", "U"); RString(s, "à", "a");
+        RString(s, "è", "e"); RString(s, "ì", "i"); RString(s, "ò", "o");
+        RString(s, "ù", "u"); RString(s, "É", "E"); RString(s, "Í", "I");
+        RString(s, "Ó", "O"); RString(s, "Ú", "U"); RString(s, "Ý", "Y");
+        RString(s, "á", "a"); RString(s, "é", "e"); RString(s, "í", "i");
+        RString(s, "ó", "o"); RString(s, "ú", "u"); RString(s, "ý", "y");
+        RString(s, "Â", "A"); RString(s, "Ê", "E"); RString(s, "Î", "I");
+        RString(s, "Ô", "O"); RString(s, "Û", "U"); RString(s, "â", "a");
+        RString(s, "ê", "e"); RString(s, "î", "i"); RString(s, "ô", "o");
+        RString(s, "û", "u"); RString(s, "Ñ", "N"); RString(s, "Õ", "O");
+        RString(s, "ã", "a"); RString(s, "ñ", "n"); RString(s, "õ", "o");
+        RString(s, "Ä", "A"); RString(s, "Ë", "E"); RString(s, "Ï", "I");
+        RString(s, "Ö", "O"); RString(s, "Ü", "U"); RString(s, "Ÿ", "Y");
+        RString(s, "ä", "a"); RString(s, "ë", "e"); RString(s, "ï", "i");
+        RString(s, "ö", "o"); RString(s, "ü", "u"); RString(s, "ÿ", "y");
     }
     
     void QServ::getLocation(clientinfo *ci) {
@@ -485,7 +505,8 @@ namespace server {
                     http::Request req(r_str);
                     const http::Response res = req.send("GET");
                     std::string s(res.body.begin(), res.body.end());
-                    ReplaceStringInPlace(s, "\n", " > ");
+                    RString(s, "\n", " > ");
+                    UTFEncode(s);
                     s.erase(s.length()-2, 2);
                     defformatstring(msg)("\f0%s \f7connected from \f6%s", colorname(ci), s.c_str());
                     out(ECHO_SERV,"%s", msg);
