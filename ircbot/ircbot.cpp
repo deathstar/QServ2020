@@ -1,4 +1,3 @@
-//#include "game.h"
 #ifndef WIN32
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -14,9 +13,6 @@ VAR(ircport, 0, 6667, 65535);
 VAR(ircignore, 0, 0, 1);
 SVAR(ircchan, "#QServ");
 SVAR(ircbotname, "QServ");
-//#include "game.h"
-//#include "ircbot.h"
-
 SVAR(ircloginpass, "default");
 
 ICOMMAND(login, "s", (char *s), {
@@ -38,14 +34,6 @@ ICOMMAND(clearbans, "", (), {
 ICOMMAND(forceintermission, "", (), {
     if(isloggedin()) {server::startintermission();}
 });
-
-/*ICOMMAND(doscript, "s", (char *s), {
-    if(isloggedin()){
-        if(fileexists(s, "r"))
-            //luaL_dofile(luavm.getState(), s);
-        else irc.notice(irc.lastmsg()->nick, "Invalid Script Name");
-    }
-});*/
 
 ICOMMAND(join, "s", (char *s), {
     if(isloggedin())
@@ -157,14 +145,14 @@ bool ircBot::checkping(char *buff)
             }
     }
 
-    printf("%s\n", buff);
+    printf("\n%s\n", buff);
     char Pingout[60];
     memset(Pingout,'\0',60);
     if(found == true)
     {
         snprintf(Pingout,60,"PONG :%s\r\n",buff);
         send(sock,Pingout,strlen(Pingout),0);
-        printf("PONG: %s\r\n", irchost);
+        printf("PONG: %s\r\n\n", irchost);
         return 1;
     }
     return 0;
