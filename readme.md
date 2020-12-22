@@ -1,4 +1,4 @@
-# ![](https://cdn0.iconfinder.com/data/icons/HDRV/32/Grey_Server_B.png) QServ [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qservcollect/wiki/Contributing) 
+# ![](https://cdn0.iconfinder.com/data/icons/HDRV/32/Grey_Server_B.png) QServ [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qserv2020/wiki/) 
 
 QServ is a Cube 2: Sauerbraten server mod that is written entirely in C and C++. The entire command system is split away from the existing server, allowing for ease of upgradability and to allow anyone to easily create their own server commands. The mod attempts to not be too intrusive into existing server architecture, however it accomodates the ever-growing FPS feature demand and expands on gameplay potential and modification. 
 
@@ -11,12 +11,16 @@ DOWNLOAD
 ---------------
 
 Github offers a compressed zip (link below) or you can git clone the repository from the command line
+
 direct download link: https://codeload.github.com/deathstar/qserv2020/zip/master
+
 command line download: git clone https://github.com/deathstar/qserv2020
 
 
 QUICK SETUP
 -----------------
+
+Please read the wiki as it has more detailed information: https://github.com/deathstar/QServ2020/wiki/Setting-Up-Your-Server. 
 
 You can simply use the included precompiled executables in the qserv2020-main/bins folder. please move the qserv osx or qserv linux (according to if you're on mac osx or linux) executable into the root qserv2020-main folder and rename it qserv, then run the server executable by executing ./qserv. If the x64 executables are not compatible with your system, then please compile QServ yourself and create your own executable by following the steps below:
 
