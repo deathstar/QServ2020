@@ -206,7 +206,7 @@ void ircBot::init()
             if(ircstring) {
                 if(!IsCommand(mybuffer)){
                     
-                    defformatstring(toserver)("\f7%s \f3%s \f7- \f0%s\f7: %s", newstring(irchost), newstring(ircchan), msg.nick, msg.message);
+                    defformatstring(toserver)("\f7%s \f3%s \f7- \f0%s\f7: %s", irchost, ircchan, msg.nick, msg.message);
                     server::sendservmsg(toserver);
                     
                 }
