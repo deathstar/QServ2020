@@ -3189,6 +3189,7 @@ best.add(clients[i]); \
         va_end(ap);
     }
     
+    VAR(modifiedmapspectator, 0, 1, 1);
     void checkmaps(int req = -1)
     {
         if(m_edit || !smapname[0]) return;
@@ -3220,23 +3221,28 @@ best.add(clients[i]); \
         {
             clientinfo *ci = clients[i];
             if(ci->state.state==CS_SPECTATOR || ci->state.aitype != AI_NONE || ci->clientmap[0] || ci->mapcrc >= 0 || (req < 0 && ci->warned)) continue;
-            formatstring(msg)("\f3[Warning]: \f0%s \f7has a modified map file \"%s\")", colorname(ci), smapname);
+            formatstring(msg)("%s has modified map \"%s\"", colorname(ci), smapname);
             sendf(req, 1, "ris", N_SERVMSG, msg);
-            out(ECHO_NOCOLOR,"[Warning]: %s has modified map %s", colorname(ci), smapname);
             if(req < 0) ci->warned = true;
         }
-        if(crcs.empty() || crcs.length() < 2) return;
-        loopv(crcs)
+        if(crcs.length() >= 2) loopv(crcs)
         {
             crcinfo &info = crcs[i];
             if(i || info.matches <= crcs[i+1].matches) loopvj(clients)
             {
                 clientinfo *ci = clients[j];
                 if(ci->state.state==CS_SPECTATOR || ci->state.aitype != AI_NONE || !ci->clientmap[0] || ci->mapcrc != info.crc || (req < 0 && ci->warned)) continue;
-                formatstring(msg)("\f3[Warning]: \f0%s \f7has a modified map file \"%s\")", colorname(ci), smapname);
+                formatstring(msg)("%s has modified map \"%s\"", colorname(ci), smapname);
                 sendf(req, 1, "ris", N_SERVMSG, msg);
-                out(ECHO_NOCOLOR,"[Warning]: %s has modified map %s", colorname(ci), smapname);
                 if(req < 0) ci->warned = true;
+            }
+        }
+        if(req < 0 && modifiedmapspectator && (mcrc || modifiedmapspectator == 1)) loopv(clients)
+        {
+            clientinfo *ci = clients[i];
+            if(!ci->local && ci->warned && ci->state.state != CS_SPECTATOR) {
+                forcespectator(ci);
+                ci->isSpecLocked = true;
             }
         }
     }
