@@ -2808,13 +2808,11 @@ best.add(clients[i]); \
     {
         actor->state.guninfo[gun].damage += damage; //adds damage per guninfo
         gamestate &ts = target->state;
-        if(notkdamage) {
-            if(!isteam(actor->team, target->team))
-                ts.dodamage(damage);
+        if(enable_passflag && actor!=target && isteam(actor->team, target->team) && !notkdamage && !nodamage) {
+            ctfmode.dopassflagsequence(actor,target);
+            ts.dodamage(damage);
         }
-        else if(enable_passflag && actor!=target && isteam(actor->team, target->team)) ctfmode.dopassflagsequence(actor,target);
-        else if(nodamage) {}
-        else ts.dodamage(damage);
+        else if(!nodamage && !isteam(actor->team, target->team)) ts.dodamage(damage);
         if(target!=actor && !isteam(target->team, actor->team)) actor->state.damage += damage;
         sendf(-1, 1, "ri6", N_DAMAGE, target->clientnum, actor->clientnum, damage, ts.armour, ts.health);
         if(target==actor) target->setpushed();
@@ -2887,11 +2885,6 @@ best.add(clients[i]); \
             {
                 actor->state.teamkills++;
                 addteamkill(actor, target, 1);
-                defformatstring(msg)("\f7Say sorry to \f1%s\f7. You have teamkilled (%d/%d times). You will be banned if you teamkill %d more times.", colorname(target), actor->state.teamkills, maxteamkills, maxteamkills-actor->state.teamkills);
-                if(actor->clientnum < 128) sendf(actor->clientnum, 1, "ris", N_SERVMSG, msg); //don't send msg to bots
-                defformatstring(srryfrag)("\f7You were teamkilled by: \f0%s \f7(\f3%d\f7). Use \f2#forgive %d \f7or use \f2#callops \f7to make a report.", colorname(actor), actor->state.teamkills, actor->clientnum);
-                if(target->clientnum < 128) sendf(target->clientnum, 1, "ris", N_SERVMSG, srryfrag); //don't send msg to bots
-                out(ECHO_NOCOLOR, "Teamkiller: %s (%d)", colorname(actor), actor->state.teamkills);
             }
             ts.deadflush = ts.lastdeath + DEATHMILLIS;
             // ts.respawn(); don't issue respawn yet until DEATHMILLIS has elapsed
