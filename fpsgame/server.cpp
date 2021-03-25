@@ -1407,14 +1407,10 @@ namespace server {
             if(authdesc && authdesc[0]) formatstring(msg)("\f0%s \f7claimed \f6%s \f7as '\fs\f5%s\fr' [\fs\f0%s\fr]", colorname(ci), name, authname, authdesc);
             else formatstring(msg)("\f0%s \f7claimed %s as '\fs\f5%s\fr'", colorname(ci), name, authname);
         }
-        else if(!revoke) formatstring(msg)("\f0%s \f7%s \f7%s", colorname(ci), val ? "claimed" : "relinquished", name);
+        else formatstring(msg)("\f0%s \f7%s \f7%s", colorname(ci), val ? "claimed" : "relinquished", name);
         packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        
-        if(!revoke) {
-            putint(p, N_SERVMSG);
-            sendstring(msg, p);
-        }
-        
+        putint(p, N_SERVMSG);
+        sendstring(msg, p);
         putint(p, N_CURRENTMASTER);
         putint(p, mastermode);
         loopv(clients) if(clients[i]->privilege >= PRIV_MASTER && !clients[i]->isInvAdmin)
