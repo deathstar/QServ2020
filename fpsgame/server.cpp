@@ -442,7 +442,7 @@ namespace server {
     VAR(restrictgamespeed, 0, 0, 1);                 //restricts setting gamespeed for masters/admin/nopriv
     VAR(autodemo, 0, 0, 1);                          //record demos automatically
     VAR(welcomewithname, 0, 0, 1);                   //welcome a client with name
-    VAR(serverconnectmsg, 0, 0, 1);                  //incoming connection alerts for admins
+    VAR(showclientips, 0, 0, 1);                     //admins see client IP's on connect
     VAR(nodamage, 0, 0, 1);                          //no damage for anyone
     VAR(notkdamage, 0, 0, 1);                        //no damage for teamkills
     VAR(autosendmap, 0, 1, 1);                       //automatically sends map in edit mode
@@ -3271,9 +3271,10 @@ best.add(clients[i]); \
     
     int clientconnect(int n, uint ip, char *ipstr)
     {
-        if(serverconnectmsg) {privilegemsg(PRIV_MASTER, "\f7Client detected...");}
         clientinfo *ci = getinfo(n);
         ci->ip=ipstr; //QServ ci->ip
+        defformatstring(cm)("IP: %s", ci->ip);
+        if(showclientips) privilegemsg(PRIV_ADMIN, cm);
         ci->clientnum = ci->ownernum = n;
         ci->connectmillis = totalmillis;
         ci->sessionid = (rnd(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
