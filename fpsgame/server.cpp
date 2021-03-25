@@ -1815,11 +1815,13 @@ namespace server {
         bool hasmaster = false;
         if(mastermode != MM_OPEN)
         {
-            putint(p, N_CURRENTMASTER);
-            putint(p, mastermode);
-            hasmaster = true;
+            loopv(clients) if(!clients[i]->isInvAdmin) {
+                putint(p, N_CURRENTMASTER);
+                putint(p, mastermode);
+                hasmaster = true;
+            }
         }
-        loopv(clients) if(clients[i]->privilege >= PRIV_MASTER)
+        loopv(clients) if(clients[i]->privilege >= PRIV_MASTER && !clients[i]->isInvAdmin)
         {
             if(!hasmaster)
             {
@@ -3291,7 +3293,7 @@ best.add(clients[i]); \
            loopv(clients) if(clients[i]->authkickvictim == ci->clientnum) clients[i]->cleanauth();
            if(ci->connected)
            {
-               if(ci->privilege) setmaster(ci, false);
+               if(ci->privilege && !ci->isInvAdmin) setmaster(ci, false);
                if(smode) smode->leavegame(ci, true);
                ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
                savescore(ci);
