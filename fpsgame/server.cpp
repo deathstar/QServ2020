@@ -4213,7 +4213,7 @@ best.add(clients[i]); \
                 {
                     ci->ping = ping;
                     loopv(ci->bots) {ci->bots[i]->ping = ping;}
-                    if((ci->ping)>getvar("maxpingwarn")) {
+                    if((ci->ping)>getvar("maxpingwarn") && ci->state.state!=CS_SPECTATOR) {
                         if(!ci->pingwarned) {
                             if(ci->clientnum < 128) {
                                 defformatstring(s)("\f2[Notice]: \f7%s", pingwarncustommsg);
