@@ -4,6 +4,30 @@ namespace aiman
     bool dorefresh = false;
     VARN(serverbotlimit, botlimit, 0, 8, MAXBOTS);
     VARN(serverbotbalance, botbalance, 0, 1, 1);
+
+    struct botname {
+        string name;
+        botname() { copystring(name, "bot", MAXSTRLEN-1); }
+    };
+
+    vector<botname> botnames;
+
+    bool addbotname(char *name) {
+        bool ok = true;
+        
+        loopv(botnames) {
+            if(!strcasecmp(botnames[i].name, name)) ok = false;
+        }
+
+        if(ok) {
+            botname bn;
+            copystring(bn.name, name, MAXSTRLEN-1);
+            botnames.add(bn);
+        }
+
+        return ok;
+    }
+    COMMAND(addbotname, "s");
     
     void calcteams(vector<teamscore> &teams)
     {
@@ -116,7 +140,25 @@ namespace aiman
         ci->state.skill = skill <= 0 ? rnd(50) + 51 : clamp(skill, 1, 101);
         clients.add(ci);
         ci->state.lasttimeplayed = lastmillis;
-        copystring(ci->name, "bot", MAXNAMELEN+1);
+        
+		if(botnames.length()) {
+			int nbots = 0;
+			loopv(bots) { if(bots[i]) nbots++; }
+			if(nbots <= botnames.length()) {
+				int n = 0;
+				if(nbots < botnames.length()) n = random() % (botnames.length() - nbots); // avoid FPE % 0
+				int x = 0;
+				loopv(botnames) {
+					bool found = false;
+					loopvj(bots) { if(!bots[j]) continue; if(!strcmp(bots[j]->name, botnames[i].name)) { found = true; break; } }
+					if(!found) {
+						if(x == n) copystring(ci->name, botnames[i].name, MAXNAMELEN-1);
+						if(x++ == n) break;
+					}
+				}
+			} else copystring(ci->name, botnames[random() % botnames.length()].name, MAXNAMELEN-1);
+		} else copystring(ci->name, "bot", MAXNAMELEN+1);
+
         ci->state.state = CS_DEAD;
         copystring(ci->team, team, MAXTEAMLEN+1);
         ci->playermodel = rnd(128);

@@ -410,7 +410,7 @@ namespace server {
     stream *demotmp = NULL, *demorecord = NULL, *demoplayback = NULL;
     int nextplayback = 0;
     
-    /***********QServ***********/
+    //QServ
     SVAR(serverdesc, "");
     SVAR(serverpass, "");
     SVAR(adminpass, "");
