@@ -2274,6 +2274,9 @@ namespace server {
             ci->votedmapsucks = false;
         }
         
+        if(m_teammode) q_teammode = true;
+        else if(!m_teammode) q_teammode = false;
+        
         if(!m_mp(gamemode)) kicknonlocalclients(DISC_LOCAL);
         
         sendf(-1, 1, "risii", N_MAPCHANGE, smapname, gamemode, 1);
@@ -3665,8 +3668,6 @@ best.add(clients[i]); \
     
     void parsepacket(int sender, int chan, packetbuf &p) //has to parse exactly each byte of the packet
     {
-        if(m_teammode) q_teammode = true;
-        else if(!m_teammode) q_teammode = false;
         if(instacoop && gamemillis >= instacoop_gamelimit && !interm) startintermission(); //instacoop intermission initializer
         if(sender<0 || p.packet->flags&ENET_PACKET_FLAG_UNSEQUENCED || chan > 2) return;
         char text[MAXTRANS];
@@ -3836,7 +3837,7 @@ best.add(clients[i]); \
                 }
                 if(val)
                 {
-                    if(instacoop) {
+                    if(instacoop || ci->isEditMuted) {
                         forcespectator(ci);
                         ci->isSpecLocked = true;
                         sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f3Error: Editing is not allowed, please reconnect to continue playing.");
@@ -4112,14 +4113,18 @@ best.add(clients[i]); \
                 break;
             }
                 
+            
+            /*
+            Causes message error
             case N_EDITF:       //maptitle, fpush
-            case N_EDITM:       //model
-            case N_FLIP:        //flipcube
-            case N_ROTATE:      //rotate
-            case N_DELCUBE:     //editdelcube
-            case N_EDITT:       //texture
+            case N_EDITM:       //material
             case N_REPLACE:     //replace cube
-            case N_EDITVSLOT:   //vslot var
+            case N_DELCUBE:     //editdelcube
+            case N_ROTATE:      //rotate
+            case N_FLIP:        //flipcube
+            */
+            case N_EDITT:       //texture
+            case N_EDITVSLOT:   //vscroll, vscolor
             {
                 int size = server::msgsizelookup(type);
                 if(size<=0) { disconnect_client(sender, DISC_MSGERR); return; }
