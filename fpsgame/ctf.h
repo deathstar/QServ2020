@@ -99,7 +99,7 @@ struct ctfclientmode : clientmode
                     loopv(flags) if(flags[i].dropper == actor->clientnum) { flags[i].dropper = -1; flags[i].dropcount = 0; }
                     takeflag(target, i, f.version);
                     update();
-                    out(ECHO_SERV, "%s passed the flag to %s", colorname(actor), colorname(target));
+                    out(ECHO_SERV, "\f0%s \f7passed the flag to \f6%s", colorname(actor), colorname(target));
                     target->hasPassedFlag = true;
                 }
             }

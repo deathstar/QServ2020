@@ -1351,7 +1351,7 @@ namespace server {
     }
     extern void connected(clientinfo *ci);
     
-    bool setmaster(clientinfo *ci, bool val, const char *pass = "", const char *authname = NULL, const char *authdesc = NULL, int authpriv = PRIV_MASTER, bool force = false, bool trial = false, bool revoke = false)
+    bool setmaster(clientinfo *ci, bool val, const char *pass = "", const char *authname = NULL, const char *authdesc = NULL, int authpriv = PRIV_MASTER, bool force = false, bool trial = false)
     {
         if(authname && !val) return false;
         const char *name = "";
@@ -1359,15 +1359,12 @@ namespace server {
         {
             bool haspass = adminpass[0] && checkpassword(ci, adminpass, pass);
             int wantpriv = ci->local || haspass ? PRIV_ADMIN : authpriv;
-            if(ci->privilege)
-            {
-                if(wantpriv <= ci->privilege) return true;
-            }
+            if(wantpriv <= ci->privilege) return true;
             else if(wantpriv <= PRIV_MASTER && !force)
             {
                 if(ci->state.state==CS_SPECTATOR)
                 {
-                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f3Error: Spectators may not claim master");
+                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "Spectators may not claim master.");
                     return false;
                 }
                 if(!enablemultiplemasters) {
@@ -1379,7 +1376,7 @@ namespace server {
                 }
                 if(!authname && !(mastermask&MM_AUTOAPPROVE) && !ci->privilege && !ci->local)
                 {
-                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "\f3Error: Master is disabled. \"/auth\" is enabled.");
+                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "This server requires you to use the \"/auth\" command to claim master.");
                     return false;
                 }
             }
@@ -1405,15 +1402,15 @@ namespace server {
         if(val && authname)
         {
             if(authdesc && authdesc[0]) formatstring(msg)("\f0%s \f7claimed \f6%s \f7as '\fs\f5%s\fr' [\fs\f0%s\fr]", colorname(ci), name, authname, authdesc);
-            else formatstring(msg)("\f0%s \f7claimed %s as '\fs\f5%s\fr'", colorname(ci), name, authname);
+            else formatstring(msg)("\f0%s \f7claimed %s \f7as '\fs\f5%s\fr'", colorname(ci), name, authname);
         }
-        else formatstring(msg)("\f0%s \f7%s \f7%s", colorname(ci), val ? "claimed" : "relinquished", name);
+        else formatstring(msg)("\f0%s \f7%s %s", colorname(ci), val ? "claimed" : "relinquished", name);
         packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
         putint(p, N_SERVMSG);
         sendstring(msg, p);
         putint(p, N_CURRENTMASTER);
         putint(p, mastermode);
-        loopv(clients) if(clients[i]->privilege >= PRIV_MASTER && !clients[i]->isInvAdmin)
+        loopv(clients) if(clients[i]->privilege >= PRIV_MASTER)
         {
             putint(p, clients[i]->clientnum);
             putint(p, clients[i]->privilege);
@@ -2838,10 +2835,10 @@ best.add(clients[i]); \
             
             //no teamkills, or weird negative float
             if(d > 700.0 && distanceinteger > 0 && actor != target && actor->state.aitype == AI_NONE) {
-                out(ECHO_SERV,"\f0%s \f7got a longshot kill on \f3%s \f7(Distance: \f7%d\f7 feet) with a \f1%s", colorname(actor), colorname(target), distanceinteger, guns[gun].name);
+                out(ECHO_SERV,"\f0%s \f7got a longshot kill on \f6%s \f7(Distance: \f1%d\f7 feet) with a \f4%s", colorname(actor), colorname(target), distanceinteger, guns[gun].name);
             }
             if(d <= 20.0 && actor != target && actor->state.aitype == AI_NONE) {
-                out(ECHO_SERV,"\f0%s \f7got an up close kill on \f3%s \f7with a \f1%s", colorname(actor), colorname(target), (!strcmp(guns[gun].name, "fist" )) ? "chainsaw" : guns[gun].name);
+                out(ECHO_SERV,"\f0%s \f7got an up close kill on \f6%s \f7with a \f4%s", colorname(actor), colorname(target), (!strcmp(guns[gun].name, "fist" )) ? "chainsaw" : guns[gun].name);
             }
             
             target->state.deaths++;
@@ -3431,9 +3428,6 @@ best.add(clients[i]); \
         return ci && ci->connected;
     }
 
-    
-    #include "master.h"
-#if Q
     clientinfo *findauth(uint id)
     {
         loopv(clients) if(clients[i]->authreq == id) return clients[i];
@@ -3476,7 +3470,7 @@ best.add(clients[i]); \
     
     uint nextauthreq = 0;
 
-    bool tryauth(clientinfo *ci, const char *user, const char *desc)
+   bool tryauth(clientinfo *ci, const char *user, const char *desc)
     {
         ci->cleanauth();
         if(!nextauthreq) nextauthreq = 1;
@@ -3496,7 +3490,6 @@ best.add(clients[i]); \
             else ci->cleanauth();
         }
         else if(!requestmasterf("reqauth %u %s\n", ci->authreq, ci->authname))
-        else if(1)
         {
             ci->cleanauth();
             sendf(ci->clientnum, 1, "ris", N_SERVMSG, "not connected to authentication server");
@@ -3506,13 +3499,12 @@ best.add(clients[i]); \
         return false;
     }
     
-    void answerchallenge(clientinfo *ci, uint id, char *val, const char *desc)
+    bool answerchallenge(clientinfo *ci, uint id, char *val, const char *desc)
     {
         if(ci->authreq != id || strcmp(ci->authdesc, desc))
         {
             ci->cleanauth();
-            if(ci->connectauth) disconnect_client(ci->clientnum, ci->connectauth);
-            return;
+            return !ci->connectauth;
         }
         for(char *s = val; *s; s++)
         {
@@ -3537,51 +3529,44 @@ best.add(clients[i]); \
             ci->cleanauth();
         }
         else if(!requestmasterf("confauth %u %s\n", id, val))
-        else if(1)
         {
             ci->cleanauth();
             sendf(ci->clientnum, 1, "ris", N_SERVMSG, "not connected to authentication server");
         }
-        if(!ci->authreq && ci->connectauth) disconnect_client(ci->clientnum, ci->connectauth);
+        return ci->authreq || !ci->connectauth;
     }
 
-    void masterconnected(int m)
+    void masterconnected()
     {
-        if(m >= 0)
-        {
-            logoutf("connected to master server");
-            // clear gbans on connect (not on disconnect) to prevent ms outages from clearing all bans
-            clearpbans();
-        }
+        logoutf("connected to master server");
+        // clear gbans on connect (not on disconnect) to prevent ms outages from clearing all bans
+        clearpbans();
     }
 
-    void masterdisconnected(int m)
+    void masterdisconnected()
     {
-        if(m >= 0) logoutf("disconnected from master server");
-        if(m < 0) clearpbans();
         loopvrev(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->authreq && (m >= 0 ? ci->authmaster == m : ci->authmaster >= 0)) authfailed(ci);
+            if(ci->authreq) authfailed(ci);
         }
     }
     
    void processmasterinput(const char *cmd, int cmdlen, const char *args)
-    {
-        uint id;
-        string val;
-        if(sscanf(cmd, "failauth %u", &id) == 1)
-            authfailed(id);
-        else if(sscanf(cmd, "succauth %u", &id) == 1)
-            authsucceeded(id);
-        else if(sscanf(cmd, "chalauth %u %255s", &id, val) == 2)
-            authchallenged(id, val);
-        else if(matchstring(cmd, cmdlen, "cleargbans"))
-            gbans.clear();
-        else if(sscanf(cmd, "addgban %100s", val) == 1)
-            gbans.add(val);
-    }
-#endif
+   {
+       uint id;
+       string val;
+       if(sscanf(cmd, "failauth %u", &id) == 1)
+           authfailed(id);
+       else if(sscanf(cmd, "succauth %u", &id) == 1)
+           authsucceeded(id);
+       else if(sscanf(cmd, "chalauth %u %255s", &id, val) == 2)
+           authchallenged(id, val);
+       else if(matchstring(cmd, cmdlen, "cleargbans"))
+           gbans.clear();
+       else if(sscanf(cmd, "addgban %100s", val) == 1)
+           gbans.add(val);
+   }
     
     void receivefile(int sender, uchar *data, int len)
     {

@@ -75,7 +75,7 @@ bool ircBot::IsCommand(char *buff)
         {
             char *c = msg.message;
             c++;
-            conoutf(c);
+            conoutf("%s", c); //<-- silenced warning, old: conoutf(c);
             execute(c);
             return true;
         }return false;

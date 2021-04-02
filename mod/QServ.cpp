@@ -508,14 +508,15 @@ namespace server {
                     RString(s, "\n", " > ");
                     UTFEncode(s);
                     s.erase(s.length()-2, 2);
-                    defformatstring(msg)("\f0%s \f7connected from \f6%s", colorname(ci), s.c_str());
+                    defformatstring(msg)("\f0%s \f7connected from \f4%s", colorname(ci), s.c_str());
                     out(ECHO_SERV,"%s", msg);
                     defformatstring(cmsg)("%s connected from %s", colorname(ci), s.c_str());
                     out(ECHO_CONSOLE,"%s", cmsg);
                 }
                 catch (const std::exception& e)
                 {
-                    std::cerr << "HTTP geolocation localhost connect or failed with: " << e.what() << '\n';
+                    std::cerr << "no geographical location information available for localhost IP" << '\n';
+                    //<< e.what() //<-- that returns the error message, we don't need it
                 }
             }
         }

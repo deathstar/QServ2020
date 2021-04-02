@@ -199,8 +199,8 @@ enum
     CON_TAG_MASK = (0x7FFF << CON_TAG_SHIFT)
 };
 
-extern void conoutf(const char *s, ...);
-extern void conoutf(int type, const char *s, ...);
+extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
+extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 extern void conoutf(int type, int tag, const char *s, ...) PRINTFARGS(3, 4);
 extern void conoutfv(int type, const char *fmt, va_list args);
 
@@ -247,7 +247,7 @@ extern void renderentsphere(const extentity &e, float radius);
 extern void renderentring(const extentity &e, float radius, int axis = 0);
 
 // main
-extern void fatal(const char *s, ...);
+extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
 
 // rendertext
 extern bool setfont(const char *name);
@@ -466,15 +466,9 @@ extern bool hasnonlocalclients();
 extern bool haslocalclients();
 extern void sendserverinforeply(ucharbuf &p);
 extern bool requestmaster(const char *req);
+extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
 extern bool isdedicatedserver();
-
-//QServ
-void dcres(int cn, const char *reason);
-extern bool requestmasterf(int m, const char *fmt, ...) PRINTFARGS(2, 3);
-extern int  findauthmaster(const char *desc, int old = -1);
-extern bool allowmasterauth(int m, int priv);
-extern const char *getmasterauth(int m);
-extern int masterauthpriv_get(int m);
+void dcres(int cn, const char *reason); //QServ
 
 // client
 extern void sendclientpacket(ENetPacket *packet, int chan);

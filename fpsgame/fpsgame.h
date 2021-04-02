@@ -236,7 +236,7 @@ namespace server {
         bool warned, gameclip;
         ENetPacket *getdemo, *getmap, *clipboard;
         int lastclipboard, needclipboard;
-        int connectauth, authmaster;
+        int connectauth;
         uint authreq;
         string authname, authdesc;
         void *authchallenge;
@@ -347,7 +347,6 @@ namespace server {
         void cleanauth(bool full = true)
         {
             authreq = 0;
-            authmaster = -1;
             if(authchallenge) { freechallenge(authchallenge); authchallenge = NULL; }
             if(full) cleanauthkick();
         }
@@ -436,7 +435,7 @@ namespace server {
     extern const char *colorname(clientinfo *ci);
     extern void revokemaster(clientinfo *ci);
     extern void checkpausegame();
-    extern bool setmaster(clientinfo *ci, bool val, const char *pass, const char *authname, const char *authdesc, int authpriv, bool force, bool trial, bool revoke);
+    extern bool setmaster(clientinfo *ci, bool val, const char *pass, const char *authname, const char *authdesc, int authpriv, bool force, bool trial);
     
 }
 

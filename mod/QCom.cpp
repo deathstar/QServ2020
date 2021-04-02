@@ -1011,8 +1011,8 @@ namespace server {
                         if(cn!=CMD_SENDER && cn >= 0 && cn <= 1000 && cn != NULL && ci != NULL && ci->connected && args[1]!=NULL) {
                         int accuracy = (ci->state.damage*100)/max(ci->state.shotdamage, 1);
                         privilegemsg(PRIV_MASTER,"\f7Something's fishy! A cheater has been reported.");
-                         out(ECHO_SERV, "\f0%s \f7accuses \f3%s \f7(CN: \f6%d \f7| Accuracy: \f6%d%\f7) of cheating.", colorname(self), colorname(ci), ci->clientnum, accuracy);
-                        out(ECHO_NOCOLOR, "Attention Operator(s): %s - %s accuses %s (CN: %d | Accuracy: %d%) of cheating.", ircoperators, colorname(self), colorname(ci), ci->clientnum, accuracy);
+                         out(ECHO_SERV, "\f0%s \f7accuses \f3%s \f7(CN: \f6%d \f7| Accuracy: \f6%d%%\f7) of cheating.", colorname(self), colorname(ci), ci->clientnum, accuracy);
+                        out(ECHO_NOCOLOR, "Attention Operator(s): %s - %s accuses %s (CN: %d | Accuracy: %d%%) of cheating.", ircoperators, colorname(self), colorname(ci), ci->clientnum, accuracy);
                         defformatstring(nocolorcheatermsg)("\f3%s \f7has been reported.", colorname(ci));
                         sendf(CMD_SENDER, 1, "ris", N_SERVMSG, nocolorcheatermsg);
                     }
@@ -1137,19 +1137,22 @@ namespace server {
                 clientinfo *self = qs.getClient(CMD_SENDER);
                 
                 if(ci != NULL) {
-                    if(ci->connected) {
+                    if(ci->connected && getvar("enablemultiplemasters") == true) {
                         defformatstring(shareprivsmsg)("\f7Ok, %s\f7. Sharing your privileges with \f0%s\f7.", colorname(self), colorname(ci));
                         sendf(CMD_SENDER, 1, "ris", N_SERVMSG, shareprivsmsg);
                         if(self->privilege==PRIV_MASTER) {
                             defformatstring(sendprivsmsg)("\f7You have received \f0master \f7from \f0%s\f7.", colorname(self));
                             sendf(cn, 1, "ris", N_SERVMSG, sendprivsmsg);
-                            server::setmaster(ci, 1, "", NULL, NULL, PRIV_MASTER, true, false, false);
+                            server::setmaster(ci, 1, "", NULL, NULL, PRIV_MASTER, true, false);
                         }
                         else if(self->privilege==PRIV_ADMIN) {
                             defformatstring(sendprivsmsg)("\f7You have received \f6admin \f7from \f6%s\f7.", colorname(self));
                             sendf(cn, 1, "ris", N_SERVMSG, sendprivsmsg);
-                            server::setmaster(ci, 1, "", NULL, NULL, PRIV_ADMIN, true, false, false);
+                            server::setmaster(ci, 1, "", NULL, NULL, PRIV_ADMIN, true, false);
                         }
+                    }
+                    else {
+                        sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: This server has disabled the multiple masters feature");
                     }
                 } else {
                     sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
@@ -1401,10 +1404,10 @@ namespace server {
                 
                 if(ci != NULL) {
                     if(ci->connected) {
-                        server::revokemaster(ci);
+                        //server::revokemaster(ci);
                         defformatstring(msg)("Privileges have been revoked from the specified client \f3%s", colorname(ci));
-                        sendf(-1, 1, "ris", N_SERVMSG, msg);
-                        setmaster(ci, true, "", NULL, NULL, PRIV_NONE, true, false, true);
+                        sendf(CMD_SENDER, 1, "ris", N_SERVMSG, msg);
+                        setmaster(ci, NULL, "", NULL, NULL, PRIV_NONE, true, false);
                     }
                 } else {
                     sendf(CMD_SENDER, 1, "ris", N_SERVMSG, "\f3Error: Player not connected");
