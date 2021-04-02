@@ -2835,10 +2835,10 @@ best.add(clients[i]); \
             
             //no teamkills, or weird negative float
             if(d > 700.0 && distanceinteger > 0 && actor != target && actor->state.aitype == AI_NONE) {
-                out(ECHO_SERV,"\f0%s \f7got a longshot kill on \f6%s \f7(Distance: \f1%d\f7 feet) with a \f4%s", colorname(actor), colorname(target), distanceinteger, guns[gun].name);
+                out(ECHO_SERV,"\f0%s \f7got a longshot kill on \f6%s \f7(Distance: %d\f7 feet) with a \f1%s", colorname(actor), colorname(target), distanceinteger, guns[gun].name);
             }
             if(d <= 20.0 && actor != target && actor->state.aitype == AI_NONE) {
-                out(ECHO_SERV,"\f0%s \f7got an up close kill on \f6%s \f7with a \f4%s", colorname(actor), colorname(target), (!strcmp(guns[gun].name, "fist" )) ? "chainsaw" : guns[gun].name);
+                out(ECHO_SERV,"\f0%s \f7got an up close kill on \f6%s \f7with a \f1%s", colorname(actor), colorname(target), (!strcmp(guns[gun].name, "fist" )) ? "chainsaw" : guns[gun].name);
             }
             
             target->state.deaths++;
