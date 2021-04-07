@@ -143,7 +143,7 @@ namespace server {
     {
         if(timeused <= 500)
         {
-            out(ECHO_ALL, "\f0%s \f7scored an assisted flagrun",colorname(ci));
+            out(ECHO_SERV, "\f0%s \f7scored a \f6MEGARUN!", colorname(ci));
             return;
         }
         if(serverflagruns)
@@ -427,6 +427,7 @@ namespace server {
     int multifrags;
     int spreefrags;
     
+    //Format: VAR(variable name, default value if not defined in server-init, minimum value, maximum value);
     VAR(minspreefrags, 2, 5, INT_MAX);               //minimum number of kills for a killing spree to occur
     VAR(multifragmillis, 1, 2000, INT_MAX);          //milliseconds between multi-kill messages
     VAR(maxpingwarn, 1, 1000, INT_MAX);              //maximum ping before a client is warned about their ping
@@ -444,7 +445,6 @@ namespace server {
     VAR(welcomewithname, 0, 0, 1);                   //welcome a client with name
     VAR(showclientips, 0, 0, 1);                     //admins see client IP's on connect
     VAR(nodamage, 0, 0, 1);                          //no damage for anyone
-    VAR(notkdamage, 0, 0, 1);                        //no damage for teamkills
     VAR(autosendmap, 0, 1, 1);                       //automatically sends map in edit mode
     VAR(instacoop, 0, 0, 1);                         //insta like characteristics of edit mode
     VAR(instacoop_gamelimit, 1000, 600000, 9999999); //time limit for instacoop games
@@ -2804,19 +2804,21 @@ best.add(clients[i]); \
     
     void dodamage(clientinfo *target, clientinfo *actor, int damage, int gun, const vec &hitpush = vec(0, 0, 0))
     {
-        actor->state.guninfo[gun].damage += damage; //adds damage per guninfo
+        actor->state.guninfo[gun].damage += damage; //damage by gun for #stats
         gamestate &ts = target->state;
-        if(enable_passflag && actor!=target && isteam(actor->team, target->team) && !notkdamage && !nodamage) {
+        if(enable_passflag && actor!=target && isteam(actor->team, target->team)) {
             ctfmode.dopassflagsequence(actor,target);
-            ts.dodamage(damage);
+            return;
         }
-        else if(!nodamage && !isteam(actor->team, target->team)) ts.dodamage(damage);
+        if(!nodamage) {
+            ts.dodamage(damage);
+            sendf(-1, 1, "ri6", N_DAMAGE, target->clientnum, actor->clientnum, damage, ts.armour, ts.health);
+        }
         if(target!=actor && !isteam(target->team, actor->team)) actor->state.damage += damage;
-        sendf(-1, 1, "ri6", N_DAMAGE, target->clientnum, actor->clientnum, damage, ts.armour, ts.health);
         if(target==actor) target->setpushed();
         else if(!hitpush.iszero())
         {
-            ivec v = vec(hitpush).rescale(DNF);
+            ivec v(vec(hitpush).rescale(DNF));
             sendf(ts.health<=0 ? -1 : target->ownernum, 1, "ri7", N_HITPUSH, target->clientnum, gun, damage, v.x, v.y, v.z);
             target->setpushed();
         }
