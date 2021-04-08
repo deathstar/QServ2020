@@ -21,8 +21,6 @@ command line download: git clone https://github.com/deathstar/qserv2020
 QUICK SETUP
 -----------------
 
-Please read the wiki as it has more detailed information: https://github.com/deathstar/QServ2020/wiki/Setting-Up-Your-Server. 
-
 You can simply use the included precompiled executables in the qserv2020-main/bins folder. please move the qserv osx or qserv linux (according to if you're on mac osx or linux) executable into the root qserv2020-main folder and rename it qserv, then run the server executable by executing ./qserv. If the x64 executables are not compatible with your system, or you wish to have the most up to date version of QServ, then please compile QServ yourself and create your own executable by following the steps below:
 
 REQUIREMENTS FOR COMPILING
@@ -49,7 +47,7 @@ Compiling Instructions
 
 Please make sure you have all of the requirements for compiling (listed above) installed before continuing.
 
-1) Download QServ by [clicking here](https://codeload.github.com/deathstar/qserv2020/zip/master) or run "git clone https://github.com/deathstar/qserv2020.git" from command line (requires git): "sudo apt-get install git-all" or http://sourceforge.net/projects/git-osx-installer/
+1) Download QServ by [clicking here](https://codeload.github.com/deathstar/qserv2020/zip/master) or run "git clone https://github.com/deathstar/qserv2020.git" from command line (requires git): "sudo apt-get install git" or http://sourceforge.net/projects/git-osx-installer/
 
 2) place the qserv2020 folder on your Desktop and make sure it's named accordingly 
 
