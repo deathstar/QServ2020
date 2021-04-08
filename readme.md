@@ -1,4 +1,4 @@
-# ![](https://techmasterdesign.com/images/qserv_logo_github.png) QServ2020 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qserv2020/wiki/) 
+# ![](https://techmasterdesign.com/images/qserv_logo_github_small.png) QServ2020 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qserv2020/wiki/) 
 
 QServ is a Cube 2: Sauerbraten server mod that is written entirely in C and C++. The entire command system is split away from the existing server, allowing for ease of upgradability and to allow anyone to easily create their own server commands. The mod attempts to not be too intrusive into existing server architecture, however it accomodates the ever-growing FPS feature demand and expands on gameplay potential and modification. 
 
