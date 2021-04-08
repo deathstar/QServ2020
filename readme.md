@@ -1,11 +1,11 @@
-# ![](https://cdn0.iconfinder.com/data/icons/HDRV/32/Grey_Server_B.png) QServ [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qserv2020/wiki/) 
+# ![](https://techmasterdesign.com/images/qserv_logo_github.png) QServ2020 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qserv2020/wiki/) 
 
 QServ is a Cube 2: Sauerbraten server mod that is written entirely in C and C++. The entire command system is split away from the existing server, allowing for ease of upgradability and to allow anyone to easily create their own server commands. The mod attempts to not be too intrusive into existing server architecture, however it accomodates the ever-growing FPS feature demand and expands on gameplay potential and modification. 
 
 FEATURES
 -------------
 
-30+ commands, GeoIP or HTTP city/region & country geolocation by IP, IRC Bot with commands, mobile phone IRC server administration (kick/ban/etc.), multi-server chat linkage, smartbot (weather/translator/dictionary/calculator), killing spree messages, server stored maps, longshot/close up kills, beststats, pass-the-flag, command builder, reloadable server configuration/authkeys live without restart, banlist, selective unbanning, banning by ip, permanent banning (even after restart), chat/server log with time, automatically sent maps with lightmaps, lag detection, instagib on automatically sent maps from the server with lights, no teamkill damage toggle, no damage toggle, stored flagrun times, banner messages, no 1 person private mode toggle, greet clients with name toggle, default gamemode/map option, reloadable authkey system (add authkeys from the server), spam protection, overload protection, clanwar command (starts a timer and enables persistent teams), ability to call administrators from server, etc.
+30+ commands, GeoIP or HTTP city/region & country geolocation by IP, IRC Bot with commands, mobile phone IRC server administration (kick/ban/etc.), multi-server chat linkage, smartbot (weather/translator/dictionary/calculator), killing spree messages, server stored maps, longshot/close up kills, end game stats, pass-the-flag, command builder, reloadable server configuration/authkeys live without restart, banlist, selective unbanning, banning by ip, permanent banning (even after restart), chat/server log with time, automatically sent maps with lightmaps, lag detection, instagib on automatically sent maps from the server with lights, no damage toggle, stored flagrun times, banner messages, no 1 person private mode toggle, greet clients with name toggle, default gamemode/map option, spam protection, overload protection, clanwar command (starts a timer and enables persistent teams), ability to call administrators from server, etc.
 
 DOWNLOAD
 ---------------
@@ -22,7 +22,7 @@ QUICK SETUP
 
 Please read the wiki as it has more detailed information: https://github.com/deathstar/QServ2020/wiki/Setting-Up-Your-Server. 
 
-You can simply use the included precompiled executables in the qserv2020-main/bins folder. please move the qserv osx or qserv linux (according to if you're on mac osx or linux) executable into the root qserv2020-main folder and rename it qserv, then run the server executable by executing ./qserv. If the x64 executables are not compatible with your system, then please compile QServ yourself and create your own executable by following the steps below:
+You can simply use the included precompiled executables in the qserv2020-main/bins folder. please move the qserv osx or qserv linux (according to if you're on mac osx or linux) executable into the root qserv2020-main folder and rename it qserv, then run the server executable by executing ./qserv. If the x64 executables are not compatible with your system, or you wish to have the most up to date version of QServ, then please compile QServ yourself and create your own executable by following the steps below:
 
 REQUIREMENTS FOR COMPILING
 -----------------------------------------
@@ -38,7 +38,6 @@ REQUIREMENTS FOR COMPILING
  - install CMake from terminal: "sudo apt-get install cmake" 
  - install Zlib from Terminal: "sudo apt-get install zlib1g-dev"
  - install a compiler from Terminal: "sudo apt-get install build-essential"
- - update from Terminal: "sudo apt-get update"
  
 **WINDOWS**
 
@@ -70,7 +69,7 @@ CONFIGURATION
 
 - Configure general attributes in config/server-init.cfg
 - Add authkeys in config/users.cfg
-- Type "chmod 777 config/flagruns.cfg" from the command line to give QServ permission to store flagruns. (recommended)
+- Type "chmod -R 777 config" from the command line to give QServ permission to access the configuration files
 - Create a "packages/base" folder set in the QServ root directory. Then, type "chmod -R 777 packages" from the command line to give QServ permission to store maps. (optional)
 
 TROUBLESHOOTING
