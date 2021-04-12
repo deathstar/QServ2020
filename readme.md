@@ -8,16 +8,6 @@ FEATURES
 
 40+ commands, GeoIP or HTTP city/region & country geolocation by IP, IRC Bot with commands, mobile phone IRC server administration (kick/ban/etc.), multi-server chat linkage, custom bot names, show admins client IPs on connect, smartbot (weather/translator/dictionary/calculator), killing spree messages, server stored maps, longshot/close up kills, end game stats, pass-the-flag, server command builder, reloadable server configuration/authkeys live without restart, banlist, selective unbanning, banning by ip, permanent banning (even after restart), chat/server log with time, automatically sent maps with lightmaps, lag detection, instagib on automatically sent maps from the server with lights, no damage toggle, stored flagrun times, banner messages, no 1 person private mode toggle, greet clients with name toggle, default gamemode/map option, spam protection, overload protection, clanwar command (starts a timer and enables persistent teams), ability to call administrators from server, etc.
 
-DOWNLOAD
----------------
-
-Github offers a compressed zip (link below) or you can git clone the repository from the command line
-
-direct download link: https://codeload.github.com/deathstar/qserv2020/zip/master
-
-command line download: git clone https://github.com/deathstar/qserv2020
-
-
 QUICK SETUP
 -----------------
 
@@ -47,7 +37,7 @@ Compiling Instructions
 
 Please make sure you have all of the requirements for compiling (listed above) installed before continuing.
 
-1) Download QServ by [clicking here](https://codeload.github.com/deathstar/qserv2020/zip/master) or run "git clone https://github.com/deathstar/qserv2020.git" from command line (requires git): "sudo apt-get install git" or http://sourceforge.net/projects/git-osx-installer/
+1) Download QServ by [clicking here](https://codeload.github.com/deathstar/qserv2020/zip/master) or run "git clone https://github.com/deathstar/QServ2020" from command line (requires git): "sudo apt-get install git" or http://sourceforge.net/projects/git-osx-installer/
 
 2) place the qserv2020 folder on your Desktop and make sure it's named accordingly 
 
@@ -91,8 +81,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+the software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. in no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
 
 MORE HELP
 ---------------
