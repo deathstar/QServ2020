@@ -32,7 +32,7 @@ REQUIREMENTS FOR COMPILING
 
 - A Windows version of QServ will be available soon
 
-Compiling Instructions
+COMPILATION INSTRUCTIONS
 --------------------------
 
 Please make sure you have all of the requirements for compiling (listed above) installed before continuing.
