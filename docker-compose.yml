@@ -1,0 +1,12 @@
+version: '3'
+services:
+  Sauerbraten-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Sauerbraten-server
+    restart: always
+    ports:
+      - "28785:28785"
+    volumes:
+      - "${PWD}/Qserv/config:/qserv/config"
