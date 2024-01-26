@@ -1,7 +1,6 @@
 # ![](https://cdn0.iconfinder.com/data/icons/HDRV/32/Grey_Server_B.png) QServ2020 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/deathstar/qserv2020/wiki/) ![](https://img.shields.io/badge/build-passing-success) ![](https://img.shields.io/badge/dependencies-zlib%2C%20build--essential%2C%20cmake-success)
 
-[QServ](https://techmasterdesign.com/qserv/) is a standalone Cube 2: Sauerbraten server that is written entirely in C and C++. The entire command system is split away from the existing server, allowing for ease of upgradability and to allow anyone to easily create their own server commands. The server features complimentary functions 
-for C++ and C that allow users to easily create their own commands, functions, and modifications. 
+[QServ](https://techmasterdesign.com/qserv/) is a standalone Cube 2: Sauerbraten server that is written entirely in C and C++. The entire command system is split away from the existing server, allowing for ease of upgradability and better organization. The server also features complimentary functions for C++ and C that allow users to more easily create their own commands, functions, and modifications. 
 
 FEATURES
 -------------
